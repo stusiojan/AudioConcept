@@ -59,9 +59,10 @@ Locating Musical Concepts in a Genre Classifier
 
 ## SETUP
 
-#### Activate virtual environment and download dependencies
+#### Prepare virtual environment and download dependencies
 ```bash
-source .env/bin/activate
+python 3.10 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 

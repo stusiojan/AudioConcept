@@ -22,6 +22,9 @@ Cel: Stworzenie systemu, który nie tylko klasyfikuje gatunek muzyczny, ale też
 		- Generowanie odsłuchiwalnych fragmentów odpowiedzialnych za klasyfikację (?)
 	5. planowany stack technologiczny
 		- Kontrola wersji: github
+		- Logging: Loguru
+		- Autoformatter: Ruff
+		- Środowisko wirtualne: venv
 		- Librosa
 		- Python
 		- audioLIME
