@@ -23,8 +23,8 @@ Planem minimum projektu byłaby implementacja artykułu (pomijając metody, któ
 | ------------- | ------------- |------|
 | “Musical Genre Classification Using Advanced Audio Analysis and Deep Learning Techniques”   | Trening klasyfikacji przeprowadzono na zbiorach danych GTZAN oraz ISMIR2004. Do klasyfikacji gatunków muzycznych wykorzystano modele FNN, CNN, RNN-LSTM, SVM i KNN. Preprocessing obejmował ekstrakcję cech (MFCC, FFT, STFT), a optymalizację przeprowadzono za pomocą dropoutu, L2 regularization i batch normalization.| [link](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10605044) |
 | “Why Should I Trust You?”: Explaining the Predictions of Any Classifier  | LIME library  | [link](https://arxiv.org/pdf/1602.04938) |
-| {TOWARDS MUSICALLY MEANINGFUL EXPLANATIONS: USING SOURCE SEPARATION}  | audioLIME library  | https://arxiv.org/pdf/2009.02051 |
-| Constructing adversarial examples to investigate the plausibility of explanations in deep audio and image classifiers  | Researchers tests how plausible the explainers are by feeding them deliberately  perturbed input data. In audio domain LIME was tested and it does not handle it well. "...the explanation method LIME is not able to recover perturbed segments in a satisfactory manner, with even the baseline performing better". The tested audio was recorded voice.  | https://link.springer.com/article/10.1007/s00521-022-07918-7#notes |
+| TOWARDS MUSICALLY MEANINGFUL EXPLANATIONS: USING SOURCE SEPARATION}  | audioLIME library  | [link](https://arxiv.org/pdf/2009.02051) |
+| Constructing adversarial examples to investigate the plausibility of explanations in deep audio and image classifiers  | Researchers tests how plausible the explainers are by feeding them deliberately  perturbed input data. In audio domain LIME was tested and it does not handle it well. "...the explanation method LIME is not able to recover perturbed segments in a satisfactory manner, with even the baseline performing better". The tested audio was recorded voice.  | [link](https://link.springer.com/article/10.1007/s00521-022-07918-7#notes) |
 | {nazwa}  | {rozwiązania}  | {link} |
 
 
