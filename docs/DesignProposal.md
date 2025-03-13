@@ -58,10 +58,17 @@ Planem minimum projektu byłaby implementacja artykułu (pomijając metody, któ
 - Logging: Loguru
 - Autoformatter: Ruff
 - Środowisko wirtualne: venv
-- Librosa
 - Python
-- audioLIME
-- SHAP
-
-
+	1. ML
+	- Skikit-learn
+	2. Analiza dźwięku
+	- Librosa
+	3. XAI
+	- audioLIME
+	- SHAP
+	4. Przetwarzanie danych
+	- NumPy
+	- Pandas
+	5. Wizualizacja:
+	- matplotlib / seaborn
 
