@@ -32,7 +32,7 @@ Planem minimum projektu byłaby implementacja artykułu (pomijając metody, któ
 
 
 ### Rozpiska prac per tydzień
-- | **Nr tygodnia** | **Zakres prac** | **Opis działań** |
+| **Nr tygodnia** | **Zakres prac** | **Opis działań** |
 |---------------|----------------|----------------|
 | **1 (17.03–23.03)** | Konfiguracja projektu | Przygotowanie środowiska (instalacja bibliotek, konfiguracja venv) |
 | **2 (24.03–30.03)** | Przygotowanie danych | Pobranie i wstępna eksploracja zbiorów GTZAN/ISMIR2004 |
