@@ -61,6 +61,12 @@ Planem minimum projektu byłaby implementacja artykułu (pomijając metody, któ
 - dla modelu SVM
 	- Wpływ parametrów modelu – testowanie różnych funkcji jądra (liniowe, RBF) oraz wartości parametru C.
 	- Eksperymenty zapisane w W&B – porównanie wyników różnych parametrów.
+
+### Testy 
+- Dokładność, precyzja oraz F1 modelu na różnych zbiorach danych, takich jak GTZAN i ISMIR2004,
+- Porównanie wyników klasyfikatora CNN i SVM na tych samych zbiorach (ocena, który model radzi sobie lepiej w kontekście różnych rodzajów muzyki),
+- Sprawdzenie, czy wygenerowane wyjaśnienia (fragmenty audio, które wpłynęły na klasyfikację) rzeczywiście odpowiadają elementom utworu, które mają największy wpływ na decyzję modelu
+- Testy jednostkowe 
 		
 ### Planowana funkcjonalność programu
 - Wykorzystanie prostego klasyfikatora CNN i SVM
