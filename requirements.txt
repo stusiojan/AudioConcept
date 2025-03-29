@@ -4,4 +4,7 @@ python-dotenv
 ruff
 tqdm
 typer
+pandas
+scikit-learn
+numpy
 -e .
