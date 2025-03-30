@@ -6,5 +6,8 @@ tqdm
 typer
 pandas
 scikit-learn
+matplotlib
+seaborn
 numpy
+ipykernel
 -e .
