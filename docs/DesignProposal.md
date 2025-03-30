@@ -23,11 +23,11 @@ Planem minimum projektu byłaby implementacja artykułu (pomijając metody, któ
 | ------------- | ------------- |------|
 | “Musical Genre Classification Using Advanced Audio Analysis and Deep Learning Techniques”   | Trening klasyfikacji przeprowadzono na zbiorach danych GTZAN oraz ISMIR2004. Do klasyfikacji gatunków muzycznych wykorzystano modele FNN, CNN, RNN-LSTM, SVM i KNN. Preprocessing obejmował ekstrakcję cech (MFCC, FFT, STFT), a optymalizację przeprowadzono za pomocą dropoutu, L2 regularization i batch normalization.| [link](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10605044) |
 | “Why Should I Trust You?”: Explaining the Predictions of Any Classifier  | LIME library  | [link](https://arxiv.org/pdf/1602.04938) |
-| TOWARDS MUSICALLY MEANINGFUL EXPLANATIONS: USING SOURCE SEPARATION}  | audioLIME library  | [link](https://arxiv.org/pdf/2009.02051) |
+| TOWARDS MUSICALLY MEANINGFUL EXPLANATIONS: USING SOURCE SEPARATION  | audioLIME library  | [link](https://arxiv.org/pdf/2009.02051) |
 | Constructing adversarial examples to investigate the plausibility of explanations in deep audio and image classifiers  | Researchers tests how plausible the explainers are by feeding them deliberately  perturbed input data. In audio domain LIME was tested and it does not handle it well. "...the explanation method LIME is not able to recover perturbed segments in a satisfactory manner, with even the baseline performing better". The tested audio was recorded voice.  | [link](https://link.springer.com/article/10.1007/s00521-022-07918-7#notes) |
 | “audioLIME: Listenable Explanations Using Source Separation” | audioLIME wykorzystuje separację źródeł dźwięku, aby wyjaśnienia były słuchalne. Można stosować do modeli klasyfikujących muzykę aby zrozumieć, które komponenty dźwięku miały kluczowy wpływ na predykcję modelu.| [link](https://arxiv.org/pdf/2008.00582v3.pdf) |
 | “Tracing Back Music Emotion Predictions to Sound Sources and Intuitive Perceptual Qualities” | Artykuł rozszerza audioLIME, dodając średniopoziomowe cechy percepcyjne (np. barwę, rytm, dynamikę), aby lepiej zrozumieć, jak model interpretuje emocje w muzyce. Pomaga wykryć bias w modelach klasyfikujących emocje w muzyce i sprawia, że wyjaśnienia są bliższe temu, jak ludzie rozumieją muzykę. | [link](https://arxiv.org/pdf/2106.07787v2.pdf) |
-
+| CNN ARCHITECTURES FOR LARGE-SCALE AUDIO CLASSIFICATION | VGG-ish / Short-chunk CNNs | [link](https://arxiv.org/pdf/1703.09179) |
 
 
 
@@ -38,12 +38,14 @@ Planem minimum projektu byłaby implementacja artykułu (pomijając metody, któ
 | **2 (24.03–30.03)** | Przygotowanie danych | Pobranie i wstępna eksploracja zbiorów GTZAN/ISMIR2004 |
 | **3 (31.03–06.04)** | Implementacja klasyfikatora SVM | Implementacja modelu SVM i testy różnych funkcji jądra |
 | **4 (07.04–13.04)** | Prototyp + AudioLIME | Implementacja AudioLIME do wyjaśniania klasyfikacji |
-| **5 (14.04–20.04)** | Implementacja klasyfikatora CNN | Implementacja podstawowej wersji CNN i pierwszy trening + monitorowanie w TensorBoard |
-| **6 (21.04–27.04)** | Optymalizacja CNN | Modyfikacja architektury i optymalizacja hiperparametrów + porównanie wyników w W&B |
-| **7 (28.04–04.05)** | Przerwa Majówkowa | Brak zaplanowanych prac|
+| **5 (14.04–20.04)** | Implementacja klasyfikatora short-chunk CNN | Implementacja podstawowej wersji CNN i pierwszy trening + monitorowanie w TensorBoard |
+| **6 (21.04–27.04)** | Optymalizacja CNN | Modyfikacja architektury i optymalizacja hiperparametrów + porównanie wyników w W&B + testy |
+| **7 (28.04–04.05)** | Przerwa Majówkowa | Doprecyzowanie formy dostarczania wyjaśnień z XAI|
 | **8 (05.05–11.05)** | Wprowadzenie SHAP/XAI | Implementacja SHAP do analizy wpływu cech na predykcję + zapis wyników eksperymentów |
 | **9 (12.05–18.05)** | Generowanie wyjaśnień audio | Eksperymenty z generowaniem fragmentów audio jako wyjaśnień |
 | **10 (19.05–25.05)** | Finalizacja i dokumentacja | Przygotowanie raportu końcowego i prezentacji projektu |
+
+
     - Highlevel:
 		- przygotowanie środowiska, research artykułów, przygotowanie design proposal
 		- ODDANIE DESIGN PROPOSAL
@@ -77,11 +79,12 @@ Planem minimum projektu byłaby implementacja artykułu (pomijając metody, któ
 - Kontrola wersji: github
 - Logging: Loguru
 - Autoformatter: Ruff
-- Środowisko wirtualne: venv
+- Środowisko wirtualne: venv / conda
 - Monitorowanie eksperymentów: TensorBoard / Weights & Biases (W&B)
 - Python
 	1. ML
 	- Skikit-learn
+	- pytorch
 	2. Analiza dźwięku
 	- Librosa
 	3. XAI
