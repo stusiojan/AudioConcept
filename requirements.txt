@@ -10,4 +10,5 @@ matplotlib
 seaborn
 numpy
 ipykernel
+wandb
 -e .
