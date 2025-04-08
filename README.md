@@ -68,3 +68,18 @@ pip install -r requirements.txt
 
 --------
 
+Log in to Weights and biases
+```bash
+wandb login
+# paste your API key from website https://wandb.ai/home
+```
+
+## USAGE
+
+To train and predict use commands:
+```bash
+python -m AudioConcept.modeling.train
+python -m AudioConcept.modeling.predict
+python -m AudioConcept.plots
+```
+

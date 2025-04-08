@@ -16,6 +16,7 @@ def main(
     output_path: Path = PROCESSED_DATA_DIR / "features.csv",
     # -----------------------------------------
 ):
+    """We got extracted features from Keggle, so it is a template file"""
     # ---- REPLACE THIS WITH YOUR OWN CODE ----
     logger.info("Generating features from dataset...")
     for i in tqdm(range(10), total=10):
