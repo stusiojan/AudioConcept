@@ -3,26 +3,38 @@ from pathlib import Path
 from loguru import logger
 from tqdm import tqdm
 import typer
+import matplotlib.pyplot as plt
+import seaborn as sns
+import wandb
+import numpy as np
 
-from AudioConcept.config import FIGURES_DIR, PROCESSED_DATA_DIR
+from AudioConcept.config import FIGURES_DIR, PROCESSED_DATA_DIR, MODELS_DIR
+from AudioConcept.modeling.svm_classifier import SVMClassifier
 
 app = typer.Typer()
 
 
 @app.command()
 def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
     input_path: Path = PROCESSED_DATA_DIR / "dataset.csv",
-    output_path: Path = FIGURES_DIR / "plot.png",
-    # -----------------------------------------
+    conf_output_path: Path = FIGURES_DIR / "confusion_matrix.png",
+    table_output_path: Path = FIGURES_DIR / "svm_results.png",
+    model_path: Path = MODELS_DIR / "svm_genre_classifier.pkl",
 ):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
-    logger.info("Generating plot from data...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
+    try:
+        wandb.init(project="audio-concept", name="visualization")
+    except Exception as e:
+        logger.warning(f"Failed to initialize wandb: {e}")
+        logger.warning("Continuing without wandb logging...")
+
+    # logger.info("Loading classifier")
+    # classifier = SVMClassifier()
+    # classifier.load_model(model_path)
+
+    # logger.info("Generating plot from data...")
+    # classifier.plot_confusion_matrix()
+
     logger.success("Plot generation complete.")
-    # -----------------------------------------
 
 
 if __name__ == "__main__":
