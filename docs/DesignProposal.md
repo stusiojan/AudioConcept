@@ -96,3 +96,30 @@ Planem minimum projektu byłaby implementacja artykułu (pomijając metody, któ
 	5. Wizualizacja:
 	- matplotlib / seaborn
 
+### Wartości numeryczne dla rozpatrywanych gatunków muzycznych:
+	blues - 0 | classical - 1 | country - 2 | disco	- 3 | hiphop - 4 | jazz - 5 | metal - 6 | pop - 7 | reggae - 8 | rock - 9
+
+### Składowe, które weszły do modeli:
+
+
+| Nazwa zmiennej	| Pełna nazwa po polsku |
+|-------------------|-----------------------|
+length	| Długość nagrania (w sekundach)
+chroma_stft_mean | Średnia wartość chromagramu (z przekształcenia STFT)
+chroma_stft_var	| Wariancja chromagramu (STFT)
+rms_mean | Średnia wartość RMS (energia/głośność sygnału)
+rms_var	| Wariancja RMS (zmienność głośności)
+spectral_centroid_var | Wariancja środka spektralnego (jasność barwy dźwięku)
+spectral_bandwidth_var	| Wariancja szerokości pasma spektralnego (zakres częstotliwości)
+rolloff_mean | Średnia wartość częstotliwości roll-off (próg zawierający 85% energii sygnału)
+rolloff_var |	Wariancja częstotliwości roll-off
+zero_crossing_rate_mean	| Średni współczynnik przejść przez zero (szorstkość/brzmienie)
+zero_crossing_rate_var	| Wariancja współczynnika przejść przez zero
+harmony_mean | Średnia wartość komponentu harmonicznego (związana z melodią, tonacją)
+harmony_var	| Wariancja komponentu harmonicznego
+perceptr_mean | Średnia wartość komponentu perkusyjnego (rytmicznego)
+perceptr_var | Wariancja komponentu perkusyjnego
+tempo | Tempo utworu w BPM (uderzenia na minutę)
+mfcc{1-20}_mean | Średnia wartość MFCC
+mfcc{1-20}_var | Wariancja MFCC
+
