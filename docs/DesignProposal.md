@@ -38,7 +38,7 @@ Planem minimum projektu byłaby implementacja artykułu (pomijając metody, któ
 | **2 (24.03–30.03)** | Przygotowanie danych | Pobranie i wstępna eksploracja zbiorów GTZAN/ISMIR2004 |
 | **3 (31.03–06.04)** | Implementacja klasyfikatora SVM | Implementacja modelu SVM i testy różnych funkcji jądra |
 | **4 (07.04–13.04)** | Prototyp + AudioLIME | Implementacja AudioLIME do wyjaśniania klasyfikacji |
-| **5 (14.04–20.04)** | Implementacja klasyfikatora short-chunk CNN | Implementacja podstawowej wersji CNN i pierwszy trening + monitorowanie w TensorBoard |
+| **5 (14.04–20.04)** | Implementacja klasyfikatora short-chunk CNN | Implementacja podstawowej wersji CNN i pierwszy trening + monitorowanie w W&B |
 | **6 (21.04–27.04)** | Optymalizacja CNN | Modyfikacja architektury i optymalizacja hiperparametrów + porównanie wyników w W&B + testy |
 | **7 (28.04–04.05)** | Przerwa Majówkowa | Doprecyzowanie formy dostarczania wyjaśnień z XAI|
 | **8 (05.05–11.05)** | Wprowadzenie SHAP/XAI | Implementacja SHAP do analizy wpływu cech na predykcję + zapis wyników eksperymentów |
