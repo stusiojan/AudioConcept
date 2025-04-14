@@ -5,7 +5,7 @@ from tqdm import tqdm
 import typer
 from sklearn.model_selection import train_test_split
 
-from AudioConcept.config import MODELS_DIR, PROCESSED_DATA_DIR
+from AudioConcept.config import MODELS_DIR, PROCESSED_DATA_DIR, FIGURES_DIR
 from AudioConcept.modeling.svm_classifier import SVMClassifier
 
 app = typer.Typer()
@@ -55,9 +55,7 @@ def train_model(
     logger.info("\nClassification Report:")
     logger.info(report)
 
-    classifier.plot_confusion_matrix(
-        conf_mat, PROCESSED_DATA_DIR / "confusion_matrix.png"
-    )
+    classifier.plot_confusion_matrix(conf_mat, FIGURES_DIR / "confusion_matrix.png")
 
     # return classifier
 
