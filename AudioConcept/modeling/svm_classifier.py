@@ -122,15 +122,21 @@ class SVMClassifier:
             self.model = grid_search.best_estimator_
             self.best_params_ = grid_search.best_params_
 
+            logger.info(f"Best parameters: {self.best_params_}")
+            logger.info(f"Best CV score: {grid_search.best_score_}")
+
             if self.use_wandb:
                 try:
-                    wandb.config.update(grid_search.best_params_)
-                    wandb.log(
-                        {
-                            "best_cv_score": grid_search.best_score_,
-                            "cv_results": grid_search.cv_results_,
-                        }
+                    table = wandb.Table(
+                        columns=["Parameter", "Value"],
+                        data=[
+                            [f"{param}", f"{grid_search.best_params_[param]}"]
+                            for param in grid_search.best_params_
+                        ],
                     )
+                    wandb.config.update(grid_search.best_params_)
+                    wandb.log({"grid_search_results": table})
+
                 except Exception as e:
                     logger.warning(f"Failed to log to wandb: {e}")
 
@@ -176,33 +182,26 @@ class SVMClassifier:
         logger.info(f"Report: {report}")
         logger.info(f"Confusion matrix: {conf_matrix}")
 
-        # report_columns = ["Class", "Precision", "Recall", "F1-score", "Support"]
-        # class_report = classification_report(
-        #     y, y_pred, target_names=self.genres
-        # ).splitlines()
-        #
-        # report_table = []
-        # for line in class_report[2 : (len(self.genres) + 2)]:
-        #     report_table.append(line.split())
-
         if self.use_wandb:
             try:
-                wandb.log({"test_accuracy": accuracy, "classification_report": report})
+                table = wandb.Table(
+                    columns=["Genre", "Precision", "Recall", "F1-Score"],
+                    data=[
+                        [
+                            genre,
+                            report[genre]["precision"],
+                            report[genre]["recall"],
+                            report[genre]["f1-score"],
+                        ]
+                        for genre in self.genres
+                    ],
+                )
+                # wandb.log({"test_accuracy": accuracy, "classification_report": report})
+                wandb.log({"classification_report_table": table})
+                wandb.log({"confusion_matrix": wandb.Image(conf_matrix)})
                 logger.info("Accuracy logged")
             except Exception as e:
                 logger.warning(f"Failed to log accuracy metrics to wandb: {str(e)}")
-
-            # try:
-            #     wandb.log(
-            #         {
-            #             "Confusion Matix": wandb.plot.confusion_matrix(
-            #                 y_true=y, preds=y_pred, class_names=self.genres
-            #             ),
-            #         }
-            #     )
-            #     logger.info("Confusion matrix logged")
-            # except Exception as e:
-            #     logger.warning(f"Failed to log confusion matrix to wandb: {str(e)}")
 
         return accuracy, report, conf_matrix
 
@@ -266,8 +265,6 @@ class SVMClassifier:
             wandb.log(
                 {
                     "confusion_matrix": wandb.Image(plt.gcf()),
-                    "confusion_matrix_data": confusion_matrix.tolist(),
-                    "genres": self.genres,
                 }
             )
         except Exception as e:
