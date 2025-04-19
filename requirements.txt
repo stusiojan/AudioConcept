@@ -11,4 +11,5 @@ seaborn
 numpy
 ipykernel
 wandb
+librosa
 -e .
