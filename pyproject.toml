@@ -7,7 +7,7 @@ name = "AudioConcept"
 version = "0.0.1"
 description = "Locating Musical Concepts in a Genre Classifier"
 authors = [
-  { name = "I. Lengiewicz, J. Stusio, E. Syldatk" },
+  { name = "I. Lengiewicz, J. Stusio" },
 ]
 license = { file = "LICENSE" }
 readme = "README.md"
