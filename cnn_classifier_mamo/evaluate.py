@@ -47,7 +47,9 @@ if __name__ == "__main__":
         cmap="YlGnBu",
     )
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    plt.savefig(f"results/confusion_matrix_{timestamp}.png", dpi=300, bbox_inches="tight")
+    plt.savefig(
+        f"results/confusion_matrix_{timestamp}.png", dpi=300, bbox_inches="tight"
+    )
     print("Accuracy: %.4f" % accuracy)
 
     # plt.show()
