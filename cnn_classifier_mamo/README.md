@@ -39,3 +39,18 @@ gtzan
 
 ## Train
 
+1. Set `MODEL_TO_TRAIN` in `config.py` to 'CNN' or 'VGGish'
+2. Create a directory `models` in `cnn_classifier_mamo` directory if not exist
+3.
+```bash
+python train.py
+```
+The best model will be saved in model directory
+
+## Evaluate
+
+```bash
+python evaluate.py
+```
+
+The confustion matrix will be saved in results directory
