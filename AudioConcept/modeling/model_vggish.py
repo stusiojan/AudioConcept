@@ -1,9 +1,42 @@
 from torch import nn
-from config import VGG16_ARCHITECTURE
+from AudioConcept.config import VGG16_ARCHITECTURE
 import torchaudio
 
 
 class VGGish(nn.Module):
+    """
+    1. Original implementation of VGG 16 architecture
+    3x3 kernel with padding of 1 and stride of 1.
+    Input image resolution is 224x224 and is RGB image.
+    Image resolution stays the same.
+
+    Implementation based on Aladdin Persson VGG torch [tutorial](https://www.youtube.com/watch?v=ACmuBbuXn20)
+
+    2. VGGish architecture for genre classification [paper](https://arxiv.org/pdf/1609.09430)
+
+    Authors states: 'The only changes we made to VGG (configuration E) [2] were to
+    the final layer (3087 units with a sigmoid) as well as the use of batch
+    normalization instead of LRN. While the original network had 144M
+    weights and 20B multiplies, the audio variant uses 62M weights and
+    2.4B multiplies. We tried another variant that reduced the initial
+    strides (as we did with AlexNet), but found that not modifying the
+    strides resulted in faster training and better performance. With our
+    setup, parallelizing beyond 10 GPUs did not help significantly, so
+    we trained with 10 GPUs and 5 parameter servers.'
+
+    3. GTZAN Audio Classification with VGGish Model
+    The model is originally trained on `YouTube-100M` dataset, which is much bigger than `GTZAN`.
+    I'm using Mel spectrograms from the `GTZAN` images_original directory - not `YouTube-100M`
+
+    Changes in VGG:
+    - final layer - 3087 units with a sigmoid
+    - batch normalization instead of LRN
+    - 144M weights, 20B multiplies -> 62M weights, 2.4B multiplies
+    - do not modify strides
+
+    Optimized for macOS with ARM processors - Metal Performance Shaders
+    """
+
     def __init__(
         self,
         num_channels=1,  # 16,

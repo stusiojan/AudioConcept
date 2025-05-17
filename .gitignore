@@ -187,6 +187,8 @@ cython_debug/
 
 # wandb logs
 wandb
+# tensorboard logs
+runs
 
 # Notebook GTZAN dataset
 notebooks/data
