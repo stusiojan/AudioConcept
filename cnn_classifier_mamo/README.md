@@ -8,6 +8,34 @@ In this project we are using wandb for experiments monitoring, so this will be c
 
 # Run
 
-```bash
+## Prepare conda environment
 
+Install environment (from `environment.yml` on linux, `environment_mac.yml` on macOS)
+```bash
+conda env create -f environment_mac.yml
+conda activate wimu
 ```
+
+## Prepare data
+
+1. Download GTZAN dataset and set path to it in `config.py`
+2. Run get data in GTZAN dataset repository
+```bash
+./get_data.sh
+python gtzan_loader.py
+```
+3. Make sure that folder names are correct
+```txt
+gtzan
+|-- genres
+|   |-- blues
+|   ...
+|   |-- rock
+| test_filtered.txt
+| train_filtered.txt
+| valid_filtered.txt
+```
+4. DELETE jazz.00054.wav FILE!!!
+
+## Train
+

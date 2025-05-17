@@ -191,5 +191,8 @@ wandb
 # Notebook GTZAN dataset
 notebooks/data
 
-# CNN mamodrzejewski
-cnn_classifier_mamo
+# Raw dataset
+data/raw/gtzan
+
+# Models
+*models

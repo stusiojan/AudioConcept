@@ -8,7 +8,8 @@ from gtzan_loader import test_loader, GTZAN_GENRES
 from datetime import datetime
 
 if __name__ == "__main__":
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
     cnn = CNN().to(device)
 
     # Load the best model

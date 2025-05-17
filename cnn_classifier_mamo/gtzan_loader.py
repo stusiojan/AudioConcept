@@ -1,6 +1,7 @@
 import os
 import random
 import torch
+import librosa
 import numpy as np
 import soundfile as sf
 from torch.utils import data
@@ -89,14 +90,49 @@ class GTZANDataset(data.Dataset):
         return wav
 
     def __getitem__(self, index):
+        # def __get_audio_with_librosa(
+        #     filename,
+        # ):
+        #     y, sr = librosa.load(filename, sr=None, mono=True)
+
+        #     # Convert librosa output to match soundfile output format
+        #     # sf.read returns: (samples, channels) shape array, while librosa might be (channels, samples)
+        #     if (
+        #         y.ndim > 1 and y.shape[0] == 2
+        #     ):  # if stereo and in librosa's (channels, samples) format
+        #         wav = y.T
+        #     else:
+        #         wav = y
+        #         # If the original was stereo but librosa flattened to mono, reshape to match original shape
+        #         if (
+        #             hasattr(self, "expected_channels")
+        #             and self.expected_channels == 2
+        #             and y.ndim == 1
+        #         ):
+        #             wav = np.column_stack((y, y))  # Duplicate mono to stereo
+
+        #     # Adjust for data range differences if necessary
+        #     # soundfile preserves the original range (often int16: -32768 to 32767)
+        #     # while librosa normalizes to float: -1.0 to 1.0
+        #     # If you need the original range:
+        #     if hasattr(self, "audio_bit_depth") and self.audio_bit_depth == 16:
+        #         wav = (wav * 32767).astype(np.int16)
+
+        #     # convert stereo to mono by averaging channels if needed
+        #     if wav.ndim > 1 and wav.shape[-1] == 2:  # if it's stereo
+        #         wav = np.mean(wav, axis=-1)  # average the channels to get mono
+
+        #     return wav
+
         line = self.song_list[index]
 
         # get genre
         genre_name = line.split("/")[0]
         genre_index = self.genres.index(genre_name)
 
-        # get audio
+        # get audio with librosa
         audio_filename = os.path.join(self.data_path, "genres", line)
+        # wav = __get_audio_with_librosa(audio_filename)
         wav, fs = sf.read(audio_filename)
 
         # adjust audio length
