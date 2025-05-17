@@ -1,23 +1,23 @@
 import numpy as np
 import torch
 from torch import nn
-from model_cnn import CNN
-from model_vggish import VGGish
-from gtzan_loader import train_loader, valid_loader
+from modeling.model_cnn import CNN
+from modeling.model_vggish import VGGish
+from AudioConcept.dataset import train_loader, valid_loader
 from sklearn.metrics import accuracy_score
 from datetime import datetime
-from config import LEARNING_RATE, NUM_EPOCHS, MODEL_TO_TRAIN
+from config import LEARNING_RATE, NUM_EPOCHS, model_to_train
 from torch.utils.tensorboard import SummaryWriter
 
 if __name__ == "__main__":
     # Tensorboard setup
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    experiment_name = f"GTZAN_{MODEL_TO_TRAIN}_{timestamp}_LR_{LEARNING_RATE}"
+    experiment_name = f"GTZAN_{model_to_train}_{timestamp}_LR_{LEARNING_RATE}"
     writer = SummaryWriter(f"runs/{experiment_name}")
 
     # model setup
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    match MODEL_TO_TRAIN:
+    match model_to_train:
         case "VGGish":
             model = VGGish().to(device)
         case "CNN":
@@ -87,6 +87,6 @@ if __name__ == "__main__":
         valid_losses.append(valid_loss.item())
         if np.argmin(valid_losses) == epoch:
             print("Saving the best model at %d epochs!" % epoch)
-            torch.save(model.state_dict(), f"models/best_{MODEL_TO_TRAIN}_model.ckpt")
+            torch.save(model.state_dict(), f"models/best_{model_to_train}_model.ckpt")
 
     writer.close()

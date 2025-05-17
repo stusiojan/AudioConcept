@@ -7,14 +7,15 @@ import numpy as np
 import pandas as pd
 
 from AudioConcept.config import MODELS_DIR, PROCESSED_DATA_DIR
-from AudioConcept.modeling.svm_classifier import SVMClassifier
+from AudioConcept.modeling.classifier_svm import SVMClassifier
 
 app = typer.Typer()
 
 
 @app.command()
 def main(
-    features_path: Path = PROCESSED_DATA_DIR / "test_features.csv", # No data to predict
+    features_path: Path = PROCESSED_DATA_DIR
+    / "test_features.csv",  # No data to predict
     model_path: Path = MODELS_DIR / "svm_genre_classifier.pkl",
     predictions_path: Path = PROCESSED_DATA_DIR / "test_predictions.csv",
 ):
@@ -26,6 +27,8 @@ def main(
     logger.success("Inference complete.")
 
 
+# TODO: Add data validation on input
+# TODO: Add prediction implementation here to SVM, CNN and VGG
 def predict(model_path, input_features, model_name="svm_genre_classifier"):
     """Make predictions using a trained SVM classifier.
 
