@@ -3,23 +3,28 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, confusion_matrix
-from model import CNN
+from model_cnn import CNN
+from model_vggish import VGGish
 from gtzan_loader import test_loader, GTZAN_GENRES
+from config import MODEL_TO_TRAIN
 from datetime import datetime
 
 if __name__ == "__main__":
     # device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
-    cnn = CNN().to(device)
+    match MODEL_TO_TRAIN:
+        case "VGGish":
+            model = VGGish().to(device)
+        case "CNN":
+            model = CNN().to(device)
 
     # Load the best model
-    # S = torch.load("models/best_model_backup.ckpt")
-    S = torch.load("models/best_model.ckpt")
-    cnn.load_state_dict(S)
+    S = torch.load(f"models/best_{MODEL_TO_TRAIN}_model.ckpt")
+    model.load_state_dict(S)
     print("loaded!")
 
     # Run evaluation
-    cnn.eval()
+    model.eval()
     y_true = []
     y_pred = []
 
@@ -30,7 +35,7 @@ if __name__ == "__main__":
 
             # reshape and aggregate chunk-level predictions
             b, c, t = wav.size()
-            logits = cnn(wav.view(-1, t))
+            logits = model(wav.view(-1, t))
             logits = logits.view(b, c, -1).mean(dim=1)
             _, pred = torch.max(logits.data, 1)
 

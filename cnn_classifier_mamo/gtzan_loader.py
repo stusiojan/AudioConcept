@@ -130,7 +130,7 @@ class GTZANDataset(data.Dataset):
         genre_name = line.split("/")[0]
         genre_index = self.genres.index(genre_name)
 
-        # get audio with librosa
+        # get audio
         audio_filename = os.path.join(self.data_path, "genres", line)
         # wav = __get_audio_with_librosa(audio_filename)
         wav, fs = sf.read(audio_filename)
