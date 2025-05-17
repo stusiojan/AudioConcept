@@ -8,7 +8,7 @@ import pandas as pd
 from pathlib import Path
 from torch.utils import data
 from sklearn.model_selection import train_test_split
-from config import (
+from AudioConcept.config import (
     DATA_PATH,
     PROCESSED_DATA_DIR,
     GTZAN_GENRES,

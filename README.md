@@ -9,7 +9,7 @@ Locating Musical Concepts in a Genre Classifier.
 ## SETUP
 
 ### Prepare virtual environment
-#### Using venv
+#### Using venv - 18.05 NOT UPDATED
 ```bash
 python 3.10 -m venv .venv
 source .venv/bin/activate
@@ -18,6 +18,7 @@ pip install -r requirements.txt
 
 #### Using conda
 Install environment (from `environment.yml` on linux, `environment_mac.yml` on macOS)
+TODO: Check if it is working on Windows too
 ```bash
 conda env create -f environment_mac.yml
 conda activate wimu
@@ -63,7 +64,7 @@ Set `MODEL_TO_TRAIN` in `config.py` to 'CNN' or 'VGGish' or 'SVM'
 ```bash
 python -m AudioConcept.train
 ```
-or chose it each time
+or chose it each time (but there could be mistakes in model name in logs)
 ```bash
 python -m AudioConcept.train "SVM"
 ```
@@ -74,7 +75,7 @@ The best model will be saved in model directory
 
 ```bash
 python -m AudioConcept.evaluate
-# python -m AudioConcept.evaluate "SVM
+# python -m AudioConcept.evaluate "SVM"
 ```
 In order to see classification results you must be a member of AudioConcept project - [W&B project site](https://wandb.ai/audio-concept/audio-concept?nw=nwuserjasiostusio)
 

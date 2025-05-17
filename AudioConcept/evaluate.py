@@ -1,15 +1,20 @@
 import torch
 import typer
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 from loguru import logger
 from sklearn.metrics import accuracy_score, confusion_matrix
-from modeling.model_cnn import CNN
-from modeling.model_vggish import VGGish
-from modeling.classifier_svm import SVMClassifier
-from dataset import test_loader, gtzan_features_data
-from config import MODEL_TO_TRAIN, MODELS_DIR, REPORTS_DIR, FIGURES_DIR, GTZAN_GENRES
+from AudioConcept.modeling.model_cnn import CNN
+from AudioConcept.modeling.model_vggish import VGGish
+from AudioConcept.modeling.classifier_svm import SVMClassifier
+from AudioConcept.dataset import test_loader, gtzan_features_data
+from AudioConcept.config import (
+    MODEL_TO_TRAIN,
+    MODELS_DIR,
+    REPORTS_DIR,
+    FIGURES_DIR,
+    GTZAN_GENRES,
+)
 from datetime import datetime
 
 app = typer.Typer()
@@ -17,12 +22,13 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    model_to_train: str = MODEL_TO_TRAIN,
+    model_to_train: str = typer.Argument(default=MODEL_TO_TRAIN),
     model_path: str = MODELS_DIR,
     report_path: str = REPORTS_DIR,
     figures_path: str = FIGURES_DIR,
 ):
     device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     match model_to_train:
         case "VGGish":
             model = VGGish().to(device)
@@ -40,7 +46,8 @@ def main(
             logger.info(report)
 
             classifier.plot_confusion_matrix(
-                conf_mat, f"{figures_path}_confusion_matrix_{timestamp}.png"
+                conf_mat,
+                f"{figures_path}/{model_to_train}_confusion_matrix_{timestamp}.png",
             )
             return
         case _:
@@ -50,7 +57,7 @@ def main(
     logger.info(f"Loading best model for {model_to_train}...")
     S = torch.load(f"models/best_{model_to_train}_model.ckpt")
     model.load_state_dict(S)
-    print("loaded!")
+    logger.info("loaded!")
 
     logger.info("Evaluating model...")
     model.eval()
@@ -74,16 +81,17 @@ def main(
 
     accuracy = accuracy_score(y_true, y_pred)
     cm = confusion_matrix(y_true, y_pred)
-    confusion_matrix = sns.heatmap(
+    conf_matrix = sns.heatmap(
         cm,
         annot=True,
         xticklabels=GTZAN_GENRES,
         yticklabels=GTZAN_GENRES,
         cmap="YlGnBu",
     )
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     plt.savefig(
-        f"{figures_path}/confusion_matrix_{timestamp}.png", dpi=300, bbox_inches="tight"
+        f"{figures_path}/{model_to_train}_confusion_matrix_{timestamp}.png",
+        dpi=300,
+        bbox_inches="tight",
     )
     logger.info("Accuracy: %.4f" % accuracy)
 

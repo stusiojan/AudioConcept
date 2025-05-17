@@ -1,5 +1,5 @@
 from torch import nn
-from config import VGG16_ARCHITECTURE
+from AudioConcept.config import VGG16_ARCHITECTURE
 import torchaudio
 
 

@@ -2,7 +2,7 @@ from pathlib import Path
 from loguru import logger
 from tqdm import tqdm
 
-from config import (
+from AudioConcept.config import (
     MODELS_DIR,
     FIGURES_DIR,
     MODEL_TO_TRAIN,
@@ -14,10 +14,10 @@ import typer
 import numpy as np
 import torch
 from torch import nn
-from modeling.model_cnn import CNN
-from modeling.model_vggish import VGGish
-from modeling.classifier_svm import SVMClassifier
-from dataset import train_loader, valid_loader, gtzan_features_data
+from AudioConcept.modeling.model_cnn import CNN
+from AudioConcept.modeling.model_vggish import VGGish
+from AudioConcept.modeling.classifier_svm import SVMClassifier
+from AudioConcept.dataset import train_loader, valid_loader, gtzan_features_data
 from sklearn.metrics import accuracy_score
 from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
@@ -27,7 +27,7 @@ app = typer.Typer()
 
 @app.command()
 def main(
-    model_to_train: str = MODEL_TO_TRAIN,
+    model_to_train: str = typer.Argument(default=MODEL_TO_TRAIN),
     model_path: Path = MODELS_DIR,
 ):
     logger.info(f"Training {MODEL_TO_TRAIN}...")
@@ -135,48 +135,12 @@ def train_model(
         valid_losses.append(valid_loss.item())
         if np.argmin(valid_losses) == epoch:
             logger.info("Saving the best model at %d epochs!" % epoch)
-            torch.save(model_path, f"best_{model_to_train}_model.ckpt")
+            torch.save(
+                model.state_dict(), f"{model_path}/best_{model_to_train}_model.ckpt"
+            )
 
     writer.close()
     return
-
-
-def aa(features_path, model_path, test_size=0.2, random_state=42, use_wandb=True):
-    # """Train the SVM classifier.
-
-    # Args:
-    #     test_size: Proportion of dataset to include in the test split
-    #     random_state: Random state for reproducibility
-    #     use_wandb: Whether to use wandb logging
-    # """
-    # classifier = SVMClassifier(
-    #     experiment_name="svm_genre_classifier", use_wandb=use_wandb
-    # )
-
-    # logger.info("Loading data...")
-    # X, y = classifier.load_data(features_path)
-
-    # logger.info("Splitting data...")
-    # X_train, X_test, y_train, y_test = train_test_split(
-    #     X, y, test_size=test_size, random_state=random_state
-    # )
-
-    # logger.info("Training model...")
-    # best_score = classifier.train(
-    #     f"{model_path}/best_{model_to_train}_model.pkl", X_train, y_train, random_state
-    # )  # +"svm_genre_classifier.pkl" do model_path
-    # logger.info(f"Best cross-validation score: {best_score:.4f}")
-
-    # might be moved to plots.py
-    logger.info("Evaluating model...")
-    accuracy, report, conf_mat = classifier.evaluate(X_test, y_test)
-    logger.info(f"Test accuracy: {accuracy:.4f}")
-    logger.info("\nClassification Report:")
-    logger.info(report)
-
-    classifier.plot_confusion_matrix(conf_mat, FIGURES_DIR / "confusion_matrix.png")
-
-    # return classifier
 
 
 if __name__ == "__main__":
