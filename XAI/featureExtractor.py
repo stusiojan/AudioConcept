@@ -2,7 +2,9 @@ import pandas as pd
 from pathlib import Path
 import librosa
 import numpy as np
+import pickle
 from AudioConcept.config import PROCESSED_DATA_DIR
+from sklearn.preprocessing import StandardScaler
 
 
 class FeatureExtractor:
@@ -14,7 +16,7 @@ class FeatureExtractor:
         features = {}
 
         # Podstawowe cechy
-        features['length'] = librosa.get_duration(y=y, sr=sr)
+        features['length'] = len(y)
 
         # Chroma STFT
         chroma_stft = librosa.feature.chroma_stft(y=y, sr=sr)
@@ -53,7 +55,7 @@ class FeatureExtractor:
 
         # Tempo
         tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
-        features['tempo'] = tempo
+        features['tempo'] = float(tempo)
 
         # MFCCs
         mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=20)
@@ -65,9 +67,19 @@ class FeatureExtractor:
 
     def extract_and_save(self, file_path: str):
         df = self.extract_features(file_path)
-        df.to_csv(self.output_path, index=False)
+        if 'mfcc2_mean' in df.columns:
+            df = df.drop(columns=['mfcc2_mean'])
+
+        with open(PROCESSED_DATA_DIR / "scaler.pkl", "rb") as f:
+            scaler = pickle.load(f)
+
+        df = df[scaler.feature_names_in_]  # zachowaj kolejność kolumn
+        X_standardized = scaler.transform(df)
+        X_standardized_df = pd.DataFrame(X_standardized, columns=scaler.feature_names_in_)
+
+        X_standardized_df.to_csv(self.output_path, index=False)
         print(f"Features saved to: {self.output_path}")
 
-# if __name__ == "__main__":
-    # extractor = FeatureExtractor()
-    # extractor.extract_and_save("C:/Users/weral/Desktop/WIMU/projekt/dataset/genres_original/jazz/jazz.00000.wav")
+if __name__ == "__main__":
+    extractor = FeatureExtractor()
+    extractor.extract_and_save("C:/Users/weral/Desktop/WIMU/projekt/dataset/genres_original/blues/blues.00000.wav")

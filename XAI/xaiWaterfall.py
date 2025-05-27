@@ -1,6 +1,9 @@
 import shap
 import pandas as pd
+import numpy as np
 from pathlib import Path
+import streamlit as st
+import matplotlib.pyplot as plt
 from AudioConcept.modeling.svm_classifier import SVMClassifier 
 from AudioConcept.config import MODELS_DIR, PROCESSED_DATA_DIR
 
@@ -47,7 +50,7 @@ class xaiWaterfall:
         """Skaluje dane testowe przy pomocy skalatora z załadowanego modelu."""
         if self.X_test_df is None:
             raise ValueError("Dane testowe nie zostały wczytane. Uruchom metodę load_data().")
-        self.X_test_scaled = self.classifier.scaler.transform(self.X_test_df.values)
+        self.X_test_scaled = self.classifier.scaler.transform(self.X_test_df)
         return self.X_test_scaled
 
     def compute_shap_values(self):
@@ -61,10 +64,14 @@ class xaiWaterfall:
         return self.shap_values
 
     def plot_waterfall(self, max_display: int = 14):
-        """Generuje wykres waterfall dla danego indeksu próbki."""
+        """Generuje wykres waterfall dla danego indeksu próbki i wyświetla go w Streamlit."""
         if self.shap_values is None:
             raise ValueError("Wartości SHAP nie zostały obliczone. Uruchom metodę compute_shap_values().")
+
+        plt.clf()
         shap.plots.waterfall(self.shap_values[self.sample_index], max_display=max_display)
+        fig = plt.gcf()
+        return fig
 
     def run(self):
         """
@@ -82,5 +89,5 @@ class xaiWaterfall:
         self.plot_waterfall()
 
 # if __name__ == "__main__":
-    # xai = xaiWaterfall()
-    # xai.run()
+#     xai = xaiWaterfall()
+#     xai.run()
