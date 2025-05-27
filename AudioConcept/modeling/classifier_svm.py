@@ -1,11 +1,10 @@
 import pickle
-
-import pandas as pd
 import wandb
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
+from AudioConcept.config import GTZAN_GENRES, SVM_PARAM_GRID
 from loguru import logger
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -57,32 +56,10 @@ class SVMClassifier:
         self.experiment_name = experiment_name
         self.best_params_ = None
         self.use_wandb = use_wandb
-        self.genres = [
-            "blues",
-            "classical",
-            "country",
-            "disco",
-            "hiphop",
-            "jazz",
-            "metal",
-            "pop",
-            "reggae",
-            "rock",
-        ]
+        self.genres = GTZAN_GENRES
 
         # Parameters for grid search
-        self.param_grid = {
-            "C": [0.1, 1, 10, 100],
-            "kernel": ["linear", "rbf"],
-            "gamma": ["scale", "auto", 0.1, 1],
-        }
-
-    def load_data(self, processed_data):
-        """Load data from processed dataset."""
-        df = pd.read_csv(processed_data)
-        X = df.drop("Y", axis=1)
-        y = df["Y"]
-        return X, y
+        self.param_grid = SVM_PARAM_GRID
 
     def train(self, model_path, X, y, random_state, cv=5):
         """Train the model using grid search and cross-validation.
