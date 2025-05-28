@@ -38,8 +38,9 @@ GTZAN_GENRES = [
     "rock",
 ]
 # NN data parameters
-LEARNING_RATE = 3e-4
-NUM_EPOCHS = 30
+LEARNING_RATE = 0.007  # 3e-4
+NUM_EPOCHS = 60
+MODEL_PATIENCE = 10
 VGG16_ARCHITECTURE = [
     64,
     64,

@@ -62,14 +62,19 @@ python -m AudioConcept.dataset
 
 Set `MODEL_TO_TRAIN` in `config.py` to 'CNN' or 'VGGish' or 'SVM'
 ```bash
-python -m AudioConcept.train
+python -m AudioConcept.train main
 ```
 or chose it each time (but there could be mistakes in model name in logs)
 ```bash
-python -m AudioConcept.train "SVM"
+python -m AudioConcept.train main "SVM"
 ```
 
 The best model will be saved in model directory
+
+If you want to have more control over training parameters on the go for setting up scrips with multiple experiments use:
+```bash
+python -m AudioConcept.train experiment {model name} --lr {learning rate value} --weight-decay {weight decay value} --label-smoothing {label smoothing value}  --noise-level {augmentation noise level value}
+```
 
 3. Evaluate
 

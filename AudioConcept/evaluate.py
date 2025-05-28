@@ -1,5 +1,6 @@
 import torch
 import typer
+import pickle
 import seaborn as sns
 import matplotlib.pyplot as plt
 from loguru import logger
@@ -55,9 +56,13 @@ def main(
             raise ValueError(f"Unknown model: {model_to_train}")
 
     logger.info(f"Loading best model for {model_to_train}...")
-    S = torch.load(f"models/best_{model_to_train}_model.ckpt")
-    model.load_state_dict(S)
-    logger.info("loaded!")
+
+    with open(f"{model_path}/best_{model_to_train}_model.pkl", "rb") as f:
+        model = pickle.load(f)
+    logger.info(
+        f"Loaded model from pickle file: {model_path}/best_{model_to_train}_model.pkl"
+    )
+    model = model.to(device)
 
     logger.info("Evaluating model...")
     model.eval()
@@ -89,7 +94,7 @@ def main(
         cmap="YlGnBu",
     )
     plt.savefig(
-        f"{figures_path}/{model_to_train}_confusion_matrix_{timestamp}.png",
+        f"{figures_path}/{model_to_train}_confusion_matrix_{timestamp}_accu_{accuracy}.png",
         dpi=300,
         bbox_inches="tight",
     )
