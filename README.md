@@ -76,6 +76,8 @@ If you want to have more control over training parameters on the go for setting 
 python -m AudioConcept.train experiment {model name} --lr {learning rate value} --weight-decay {weight decay value} --label-smoothing {label smoothing value}  --noise-level {augmentation noise level value}
 ```
 
+If you want to train VGGish on 3.96 second long audio change train_loader, valid_loader and test_loader `audio_length` parameter to `AudioLength.VGG`
+
 ### Evaluate
 
 ```bash
@@ -94,9 +96,9 @@ Plots will be placed in `reports/figures` directory.
     python -m AudioConcept.predict CNN test.wav
     ```
 
-    change CNN to any model from VGGish, CNN and SVM.
+    change *CNN* to any model from VGGish, CNN and SVM.
 
-    change test.wav to your filename.
+    change *test.wav* to your filename.
 
 # Sources
 
