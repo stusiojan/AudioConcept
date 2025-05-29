@@ -16,6 +16,7 @@ logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
 DATA_DIR = PROJ_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 DATA_PATH = RAW_DATA_DIR / "gtzan"
+SAMPLE_AUDIO_DIR = RAW_DATA_DIR / "sample_audio"
 INTERIM_DATA_DIR = DATA_DIR / "interim"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 EXTERNAL_DATA_DIR = DATA_DIR / "external"
