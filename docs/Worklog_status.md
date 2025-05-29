@@ -7,12 +7,12 @@
 | **3 (31.03–06.04)** | Implementacja klasyfikatora SVM | Implementacja modelu SVM i testy różnych funkcji jądra | planowo |
 | **4 (07.04–13.04)** | Prototyp + AudioLIME | Implementacja AudioLIME do wyjaśniania klasyfikacji | zawirowania w zespole, oczyszczenie kodu SVM |
 | **5 (14.04–20.04)** | Implementacja klasyfikatora short-chunk CNN | Implementacja podstawowej wersji CNN i pierwszy trening + monitorowanie w W&B | implementacja 5-cio wartswowego CNN, trenowanie|
-| **6 (21.04–27.04)** | Optymalizacja CNN | Modyfikacja architektury i optymalizacja hiperparametrów + porównanie wyników w W&B + testy | implementacja VGGisha, usprawnianie CNN |
+| **6 (21.04–27.04)** | Optymalizacja CNN | Modyfikacja architektury i optymalizacja hiperparametrów + porównanie wyników w W&B + testy | implementacja VGGisha, usprawnianie CNN, analiza idei XAI i dostępnych narzędzi |
 | **7 (28.04–04.05)** | Przerwa Majówkowa | Doprecyzowanie formy dostarczania wyjaśnień z XAI| Przerwy nie było, usprawnianie CNN i VGGish |
-| **8 (05.05–11.05)** | Wprowadzenie SHAP/XAI | Implementacja SHAP do analizy wpływu cech na predykcję + zapis wyników eksperymentów | Usprawnianie CNN i VGGish  |
-| **9 (12.05–18.05)** | Generowanie wyjaśnień audio | Eksperymenty z generowaniem fragmentów audio jako wyjaśnień | Reimplementacja VGG, usprawnienie CNN |
-| **10 (19.05–25.05)** | Finalizacja i dokumentacja | Przygotowanie raportu końcowego i prezentacji projektu | Usprawnianie CNN i VGGish, dodanie modulu do przewidywania gatunku|
-| **11 (26.05–01.06)** | - | - | Dalsze usprawnianie CNN i VGGish, przygotowanie dokumentacji |
+| **8 (05.05–11.05)** | Wprowadzenie SHAP/XAI | Implementacja SHAP do analizy wpływu cech na predykcję + zapis wyników eksperymentów | Usprawnianie CNN i VGGish, rezygnacja z AudioLime na rzecz SHAP  |
+| **9 (12.05–18.05)** | Generowanie wyjaśnień audio | Eksperymenty z generowaniem fragmentów audio jako wyjaśnień | Reimplementacja VGG, usprawnienie CNN, implementacja rozwiązań SHAP (dla poszczególnych obserwacji i całego zbioru danych |
+| **10 (19.05–25.05)** | Finalizacja i dokumentacja | Przygotowanie raportu końcowego i prezentacji projektu | Usprawnianie CNN i VGGish, dodanie modulu do przewidywania gatunku, dodanie prostego UI z możliwością predykcji gatunku i wizualizacją XAI|
+| **11 (26.05–01.06)** | - | - | Dalsze usprawnianie CNN i VGGish, przygotowanie dokumentacji, raporty dla XAI, dopracowanie demo na UI |
 
 
 ## Planowany zakres eksperymentów
@@ -93,3 +93,5 @@ Jest tez parę mniejszych pakietów jak *typer, tqdm*
 ## Do zrobienia
 
 - [ ] uspójnienie requirements i environment
+- [ ] dodanie opcji wyboru modelu do predykcji (aktualnie działa tylko dla SVM)
+- [ ] testy
