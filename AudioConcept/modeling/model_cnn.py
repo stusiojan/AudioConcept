@@ -4,7 +4,12 @@ import torchaudio
 
 class Conv_2d(nn.Module):
     def __init__(
-        self, input_channels, output_channels, shape=3, pooling=2, dropout=0.1
+        self,
+        input_channels,
+        output_channels,
+        shape=3,
+        pooling=2,
+        dropout=0.1,  # maybe 0.3
     ):
         super(Conv_2d, self).__init__()
         self.conv = nn.Conv2d(
@@ -65,26 +70,18 @@ class CNN(nn.Module):
     def forward(self, wav):
         # input preprocessing
         out = self.melspec(wav)
-        print(f"Mel spectrogram shape: {out.shape}")
         out = self.amplitude_to_db(out)
-        print(f"Amplitude to dB shape: {out.shape}")
 
         # input batch normalization
         out = out.unsqueeze(1)
         out = self.input_bn(out)
-        print(f"Input batch normalization shape: {out.shape}")
 
         # convolutional layers
         out = self.layer1(out)
-        print(f"Convolutional layer 1 shape: {out.shape}")
         out = self.layer2(out)
-        print(f"Convolutional layer 2 shape: {out.shape}")
         out = self.layer3(out)
-        print(f"Convolutional layer 3 shape: {out.shape}")
         out = self.layer4(out)
-        print(f"Convolutional layer 4 shape: {out.shape}")
         out = self.layer5(out)
-        print(f"Convolutional layer 5 shape: {out.shape}")
 
         # reshape (batch_size, num_channels, 1, 1) -> (batch_size, num_channels)
         out = out.reshape(len(out), -1)
@@ -95,7 +92,6 @@ class CNN(nn.Module):
         out = self.relu(out)
         out = self.dropout(out)
         out = self.dense2(out)
-        print(f"Dense layer output shape: {out.shape}")
 
         # example output shapes
         # Mel spectrogram shape: torch.Size([16, 128, 1249])
