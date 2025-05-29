@@ -74,13 +74,11 @@ def main(
             wav = wav.to(device)
             genre_index = genre_index.to(device)
 
-            # reshape and aggregate chunk-level predictions
             b, c, t = wav.size()
             logits = model(wav.view(-1, t))
             logits = logits.view(b, c, -1).mean(dim=1)
             _, pred = torch.max(logits.data, 1)
 
-            # append labels and predictions
             y_true.extend(genre_index.tolist())
             y_pred.extend(pred.tolist())
 

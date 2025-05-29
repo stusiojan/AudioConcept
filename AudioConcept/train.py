@@ -11,6 +11,9 @@ from AudioConcept.config import (
     NUM_EPOCHS,
     SVM_RANDOM_STATE,
     MODEL_PATIENCE,
+    WEIGHT_DECAY,
+    LABEL_SMOOTHING,
+    NOISE_LEVEL,
 )
 import typer
 import numpy as np
@@ -128,9 +131,11 @@ def train_model(
 
     # hyperparameters setup
     effective_lr = experiment_lr if experiment_lr else LEARNING_RATE
-    weight_decay = experiment_weight_decay if experiment_weight_decay else 1e-5
-    label_smoothing = experiment_label_smoothing if experiment_label_smoothing else 0.05
-    noise_level = experiment_noise_level if experiment_noise_level else 0.002
+    weight_decay = experiment_weight_decay if experiment_weight_decay else WEIGHT_DECAY
+    label_smoothing = (
+        experiment_label_smoothing if experiment_label_smoothing else LABEL_SMOOTHING
+    )
+    noise_level = experiment_noise_level if experiment_noise_level else NOISE_LEVEL
     logger.info(
         f"Experiment parameters: LR={effective_lr}, WD={weight_decay}, LS={label_smoothing}, Noise={noise_level}"
     )
@@ -141,12 +146,13 @@ def train_model(
     )
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer,
-        mode="max",  # Changed to max since we're optimizing for accuracy now
-        factor=0.8,
+        mode="max",
+        factor=0.75,
         patience=8,
-        min_lr=effective_lr / 100,
+        min_lr=effective_lr / 50,
         verbose=True,
     )
+
     num_epochs = NUM_EPOCHS
     patience = MODEL_PATIENCE
     patience_counter = 0

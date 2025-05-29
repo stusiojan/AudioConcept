@@ -37,10 +37,14 @@ GTZAN_GENRES = [
     "reggae",
     "rock",
 ]
+
 # NN data parameters
-LEARNING_RATE = 0.007  # 3e-4
+LEARNING_RATE = 3e-5  # cnn 0.007  # 3e-4
 NUM_EPOCHS = 60
-MODEL_PATIENCE = 10
+MODEL_PATIENCE = 15
+WEIGHT_DECAY = 8e-4  # 5e-4
+LABEL_SMOOTHING = 0.15
+NOISE_LEVEL = 0.002
 VGG16_ARCHITECTURE = [
     64,
     64,

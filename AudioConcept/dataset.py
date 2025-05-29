@@ -17,10 +17,7 @@ from AudioConcept.modeling.augmentation import (
     Gain,
     HighLowPass,
     Delay,
-    PitchShift,
-    Reverb,
     TimeStretch,
-    SpectralRolloff,
 )
 from enum import Enum
 from sklearn.model_selection import train_test_split
@@ -59,7 +56,7 @@ class GTZANDataset(data.Dataset):
         self.genres = GTZAN_GENRES
         self._get_song_list()
         if is_augmentation:
-            self._get_augmentations_enhanced()
+            self._get_augmentations()
 
     def _get_song_list(self):
         list_filename = os.path.join(self.data_path, "%s_filtered.txt" % self.split)
@@ -68,45 +65,14 @@ class GTZANDataset(data.Dataset):
         self.song_list = [line.strip() for line in lines]
 
     def _get_augmentations(self):
-        # Reduced and optimized augmentation pipeline to prevent memory issues
-        transforms = [
-            RandomResizedCrop(n_samples=self.num_samples),
-            RandomApply([PolarityInversion()], p=0.5),  # Reduced probability
-            RandomApply(
-                [Noise(min_snr_db=15, max_snr_db=35)], p=0.3
-            ),  # Reduced probability
-            RandomApply([Gain(min_gain_db=-3, max_gain_db=3)], p=0.3),
-            RandomApply(
-                [HighLowPass(sample_rate=self.sample_rate)], p=0.4
-            ),  # Reduced probability
-            # Removed heavy augmentations for training stability
-            # RandomApply([Delay(sample_rate=self.sample_rate)], p=0.2),
-            # RandomApply([PitchShift(n_samples=self.num_samples, sample_rate=self.sample_rate)], p=0.2),
-            # RandomApply([TimeStretch(n_samples=self.num_samples)], p=0.2),
-            # RandomApply([Reverb(sample_rate=self.sample_rate)], p=0.2),
-            # RandomApply([SpectralRolloff()], p=0.1),
-        ]
-        self.augmentation = Compose(transforms=transforms)
-
-    def _get_augmentations_enhanced(self):
         """Enhanced augmentation pipeline to combat overfitting"""
         transforms = [
-            # Basic augmentations (always applied)
             RandomResizedCrop(n_samples=self.num_samples),
-            # Geometric augmentations
             RandomApply([PolarityInversion()], p=0.5),
-            # Noise augmentations (help with robustness)
             RandomApply([Noise(min_snr_db=15, max_snr_db=35)], p=0.6),
             RandomApply([Gain(min_gain_db=-4, max_gain_db=4)], p=0.4),
-            # Frequency domain augmentations
             RandomApply([HighLowPass(sample_rate=self.sample_rate)], p=0.5),
-            # Time domain augmentations (add these back gradually)
             RandomApply([Delay(sample_rate=self.sample_rate)], p=0.3),
-            # Advanced augmentations (use carefully)
-            # RandomApply(
-            #     [PitchShift(n_samples=self.num_samples, sample_rate=self.sample_rate)],
-            #     p=0.2,
-            # ),
             RandomApply([TimeStretch(n_samples=self.num_samples)], p=0.2),
         ]
         self.augmentation = Compose(transforms=transforms)
@@ -121,16 +87,13 @@ class GTZANDataset(data.Dataset):
         """
         if self.split == "train":
             if len(wav) <= self.num_samples:
-                # Pad if too short
                 pad_length = self.num_samples - len(wav)
                 wav = np.pad(wav, (0, pad_length), mode="constant")
             else:
-                # Random crop
                 random_index = random.randint(0, len(wav) - self.num_samples)
                 wav = wav[random_index : random_index + self.num_samples]
         else:
             if len(wav) <= self.num_samples:
-                # Pad and create single chunk
                 pad_length = self.num_samples - len(wav)
                 wav = np.pad(wav, (0, pad_length), mode="constant")
                 wav = np.array([wav])
@@ -148,35 +111,26 @@ class GTZANDataset(data.Dataset):
         try:
             line = self.song_list[index]
 
-            # get genre
             genre_name = line.split("/")[0]
             genre_index = self.genres.index(genre_name)
 
-            # get audio
             audio_filename = os.path.join(self.data_path, "genres", line)
 
-            # Use soundfile for loading (more reliable)
             try:
                 wav, fs = sf.read(audio_filename)
             except Exception as e:
                 print(f"Error loading {audio_filename} with soundfile: {e}")
-                # Fallback to librosa
                 wav, fs = librosa.load(audio_filename, sr=self.sample_rate, mono=True)
 
-            # Ensure mono and correct sample rate
             if len(wav.shape) > 1:
-                wav = wav.mean(axis=1)  # Convert to mono
+                wav = wav.mean(axis=1)
 
-            # Resample if necessary
             if fs != self.sample_rate:
                 wav = librosa.resample(wav, orig_sr=fs, target_sr=self.sample_rate)
 
-            # adjust audio length
             wav = self._adjust_audio_length(wav).astype("float32")
 
-            # data augmentation - FIXED: Apply to numpy array directly
             if self.is_augmentation and self.split == "train":
-                # Only apply augmentation to 1D audio (training phase)
                 if wav.ndim == 1:
                     wav = self.augmentation(wav, self.sample_rate)
                     wav = wav.astype("float32")
@@ -185,7 +139,6 @@ class GTZANDataset(data.Dataset):
 
         except Exception as e:
             print(f"Error processing sample {index}: {e}")
-            # Return zeros as fallback
             if self.split == "train":
                 return np.zeros(self.num_samples, dtype=np.float32), 0
             else:
@@ -198,7 +151,6 @@ class GTZANDataset(data.Dataset):
         return len(self.song_list)
 
     def load_audio(self, file_path):
-        """Load audio using librosa"""
         try:
             audio, sr = librosa.load(file_path, sr=self.sample_rate, mono=True)
             return audio
@@ -220,7 +172,6 @@ def get_dataloader(
     is_shuffle = True if (split == "train") else False
     batch_size = batch_size if (split == "train") else (batch_size // num_chunks)
 
-    # Reduce num_workers for augmented datasets to prevent memory issues
     if is_augmentation:
         num_workers = min(num_workers, 2)
 
@@ -232,7 +183,7 @@ def get_dataloader(
         shuffle=is_shuffle,
         drop_last=False,
         num_workers=num_workers,
-        pin_memory=False,  # Disable to reduce memory usage
+        pin_memory=False,
     )
     return data_loader
 
@@ -259,10 +210,9 @@ def gtzan_features_data(
 def test_augmentation():
     print("Testing librosa-based audio augmentations...")
 
-    # Generate dummy audio or load a real file
+    # Dummy audio
     sample_rate = 22050
     duration = 3  # seconds
-    # Create a more realistic test signal (sine wave + noise)
     t = np.linspace(0, duration, sample_rate * duration)
     audio = (np.sin(2 * np.pi * 440 * t) + 0.1 * np.random.randn(len(t))).astype(
         np.float32
@@ -271,7 +221,6 @@ def test_augmentation():
     print(f"Original audio shape: {audio.shape}")
     print(f"Original audio RMS: {np.sqrt(np.mean(audio**2)):.4f}")
 
-    # Create lightweight augmentation pipeline for testing
     augmentations = Compose(
         [
             RandomResizedCrop(n_samples=sample_rate * 3),
@@ -281,7 +230,6 @@ def test_augmentation():
         ]
     )
 
-    # Apply augmentations multiple times to see variety
     for i in range(3):
         augmented_audio = augmentations(audio.copy(), sample_rate)
         print(
@@ -294,21 +242,21 @@ def test_augmentation():
 # Create data loaders
 train_loader = get_dataloader(
     split="train",
-    audio_length=AudioLength.CNN,
+    audio_length=AudioLength.VGG,
     is_augmentation=True,
     batch_size=6,
     num_workers=0,
 )
 valid_loader = get_dataloader(
     split="valid",
-    audio_length=AudioLength.CNN,
+    audio_length=AudioLength.VGG,
     is_augmentation=False,
     batch_size=16,
     num_workers=2,
 )
 test_loader = get_dataloader(
     split="test",
-    audio_length=AudioLength.CNN,
+    audio_length=AudioLength.VGG,
     is_augmentation=False,
     batch_size=16,
     num_workers=2,
@@ -323,7 +271,6 @@ def main():
         iter_test_loader = iter(test_loader)
         test_wav, test_genre = next(iter_test_loader)
 
-        # Test features loading
         try:
             gtzan_features_data()
         except FileNotFoundError:
@@ -334,17 +281,15 @@ def main():
         print("Validation/test data shape: %s" % str(test_wav.shape))
         print("Validation/test targets: ", test_genre)
 
-        # Test augmentation
         test_augmentation()
 
-        # Test with augmentation enabled
         print("\nTesting with augmentation enabled...")
         augmented_loader = get_dataloader(
             split="train",
             audio_length=AudioLength.CNN,
             is_augmentation=True,
-            batch_size=4,  # Even smaller batch size for augmented data
-            num_workers=0,  # Single threaded for stability
+            batch_size=4,
+            num_workers=0,
         )
 
         iter_augmented_loader = iter(augmented_loader)
