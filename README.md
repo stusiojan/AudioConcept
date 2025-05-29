@@ -58,7 +58,7 @@ python -m AudioConcept.dataset
 ```
 
 ## USAGE
-2. Train
+### Train
 
 Set `MODEL_TO_TRAIN` in `config.py` to 'CNN' or 'VGGish' or 'SVM'
 ```bash
@@ -76,7 +76,7 @@ If you want to have more control over training parameters on the go for setting 
 python -m AudioConcept.train experiment {model name} --lr {learning rate value} --weight-decay {weight decay value} --label-smoothing {label smoothing value}  --noise-level {augmentation noise level value}
 ```
 
-3. Evaluate
+### Evaluate
 
 ```bash
 python -m AudioConcept.evaluate
@@ -85,6 +85,18 @@ python -m AudioConcept.evaluate
 In order to see classification results you must be a member of AudioConcept project - [W&B project site](https://wandb.ai/audio-concept/audio-concept?nw=nwuserjasiostusio)
 
 Plots will be placed in `reports/figures` directory.
+
+### Predict genre
+
+1. Add an audio file to `data/raw/sample_audio`. Remember that audio should has .wav extension, has 22050 Hz, be no longer than 60 seconds and has only one channel.
+2. Run:
+    ```bash
+    python -m AudioConcept.predict CNN test.wav
+    ```
+
+    change CNN to any model from VGGish, CNN and SVM.
+
+    change test.wav to your filename.
 
 # Sources
 
