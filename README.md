@@ -94,9 +94,9 @@ Plots will be placed in `reports/figures` directory.
     python -m AudioConcept.predict CNN test.wav
     ```
 
-    change CNN to any model from VGGish, CNN and SVM.
+    change *CNN* to any model from VGGish, CNN and SVM.
 
-    change test.wav to your filename.
+    change *test.wav* to your filename.
 
 # Sources
 
