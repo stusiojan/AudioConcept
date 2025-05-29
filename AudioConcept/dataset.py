@@ -242,21 +242,21 @@ def test_augmentation():
 # Create data loaders
 train_loader = get_dataloader(
     split="train",
-    audio_length=AudioLength.VGG,
+    audio_length=AudioLength.CNN,
     is_augmentation=True,
     batch_size=6,
     num_workers=0,
 )
 valid_loader = get_dataloader(
     split="valid",
-    audio_length=AudioLength.VGG,
+    audio_length=AudioLength.CNN,
     is_augmentation=False,
     batch_size=16,
     num_workers=2,
 )
 test_loader = get_dataloader(
     split="test",
-    audio_length=AudioLength.VGG,
+    audio_length=AudioLength.CNN,
     is_augmentation=False,
     batch_size=16,
     num_workers=2,
