@@ -78,6 +78,14 @@ SVM_PARAM_GRID = {
     "gamma": ["scale", "auto", 0.1, 1],
 }
 
+# input audio validation parameters
+VALIDATION_PARAMS = {
+    "max_duration": 60.0,  # seconds
+    "target_sample_rate": 22050,  # Hz
+    "required_format": ".wav",
+    "required_channels": 1,  # mono
+}
+
 
 # If tqdm is installed, configure loguru with tqdm.write
 # https://github.com/Delgan/loguru/issues/135
