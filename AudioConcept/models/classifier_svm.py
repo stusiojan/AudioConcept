@@ -63,6 +63,14 @@ class SVMClassifier:
         # Parameters for grid search
         self.param_grid = SVM_PARAM_GRID
 
+        if self.use_wandb:
+            try:
+                wandb.init(project="audio-concept", name=self.experiment_name)
+            except Exception as e:
+                logger.warning(f"Failed to initialize wandb: {e}")
+                logger.warning("Continuing without wandb logging...")
+                self.use_wandb = False
+
     def train(self, model_path, X, y, random_state, cv=5):
         """Train the model using grid search and cross-validation.
 
@@ -74,13 +82,6 @@ class SVMClassifier:
             cv: Number of cross-validation folds
         """
         try:
-            if self.use_wandb:
-                try:
-                    wandb.init(project="audio-concept", name=self.experiment_name)
-                except Exception as e:
-                    logger.warning(f"Failed to initialize wandb: {e}")
-                    logger.warning("Continuing without wandb logging...")
-                    self.use_wandb = False
 
             X_scaled = self.scaler.fit_transform(X)
 

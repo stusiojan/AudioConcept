@@ -201,3 +201,6 @@ data/raw/gtzan
 
 # Figures
 /reports/
+
+# VSCode
+.vscode/
