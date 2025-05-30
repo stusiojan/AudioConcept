@@ -197,4 +197,10 @@ notebooks/data
 data/raw/gtzan
 
 # Models
-*models
+/models/
+
+# Figures
+/reports/
+
+# VSCode
+.vscode/

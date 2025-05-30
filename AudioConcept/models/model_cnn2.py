@@ -1,10 +1,16 @@
-import torch.nn as nn
 import torch
+import torch.nn as nn
 
 torch.manual_seed(1)
 
 
 class CNN2(nn.Module):
+    """
+    Well performing CNN model for audio classification from:
+    https://github.com/XiplusChenyu/Musical-Genre-Classification
+    which was trained on extended GTZAN dataset.
+    """
+
     def __init__(self):
         super(CNN2, self).__init__()
         cov1 = nn.Conv2d(

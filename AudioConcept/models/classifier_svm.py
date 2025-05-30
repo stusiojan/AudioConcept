@@ -1,14 +1,16 @@
 import pickle
-import wandb
+
+from loguru import logger
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
+import wandb
+
 from AudioConcept.config import GTZAN_GENRES, SVM_PARAM_GRID
-from loguru import logger
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
 
 
 class SVMClassifier:
@@ -61,6 +63,14 @@ class SVMClassifier:
         # Parameters for grid search
         self.param_grid = SVM_PARAM_GRID
 
+        if self.use_wandb:
+            try:
+                wandb.init(project="audio-concept", name=self.experiment_name)
+            except Exception as e:
+                logger.warning(f"Failed to initialize wandb: {e}")
+                logger.warning("Continuing without wandb logging...")
+                self.use_wandb = False
+
     def train(self, model_path, X, y, random_state, cv=5):
         """Train the model using grid search and cross-validation.
 
@@ -72,13 +82,6 @@ class SVMClassifier:
             cv: Number of cross-validation folds
         """
         try:
-            if self.use_wandb:
-                try:
-                    wandb.init(project="audio-concept", name=self.experiment_name)
-                except Exception as e:
-                    logger.warning(f"Failed to initialize wandb: {e}")
-                    logger.warning("Continuing without wandb logging...")
-                    self.use_wandb = False
 
             X_scaled = self.scaler.fit_transform(X)
 

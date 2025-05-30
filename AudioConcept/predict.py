@@ -1,46 +1,42 @@
+import os
 from pathlib import Path
 import pickle
-import os
 
-from loguru import logger
-from tqdm import tqdm
-import typer
-import numpy as np
-import pandas as pd
-import soundfile as sf
 import librosa
+from loguru import logger
+import numpy as np
+import soundfile as sf
 import torch
+import typer
 
 from AudioConcept.config import (
-    MODELS_DIR,
-    PROCESSED_DATA_DIR,
-    SAMPLE_AUDIO_DIR,
-    MODEL_TO_TRAIN,
-    REPORTS_DIR,
     GTZAN_GENRES,
+    MODEL_TO_TRAIN,
+    MODELS_DIR,
+    REPORTS_DIR,
+    SAMPLE_AUDIO_DIR,
     VALIDATION_PARAMS,
 )
-from AudioConcept.modeling.classifier_svm import SVMClassifier
-from AudioConcept.modeling.model_cnn import CNN
-from AudioConcept.modeling.model_vggish import VGGish
 
 app = typer.Typer()
+
+"""
+Command-line interface for performing genre prediction on audio files using trained models.
+"""
 
 
 @app.command()
 def main(
     prediction_model: str = typer.Argument(default=MODEL_TO_TRAIN),
-    audio_to_predict: str = typer.Argument(
-        default="test.wav",
-        help="Path to the audio file to predict genre for.",
-    ),
     audio_path: Path = SAMPLE_AUDIO_DIR,
     report_path: str = REPORTS_DIR,
     model_path: Path = MODELS_DIR,
 ):
+    audio_to_predict = prompt_user_choice()
+    audio_file_path = audio_path / audio_to_predict
+
     logger.info(f"Performing inference for {prediction_model} model...")
 
-    audio_file_path = audio_path / audio_to_predict
     if not validate_input_audio(audio_file_path):
         logger.error("Audio validation failed. Exiting.")
         return
@@ -64,6 +60,44 @@ def main(
         raise
 
     logger.success("Inference complete.")
+
+
+def prompt_user_choice() -> str:
+    """
+    Prompt user to select an audio file from the sample audio directory.
+    """
+    logger.info("Providing a list of available audio files for selection...")
+    audio_files = [f for f in os.listdir(SAMPLE_AUDIO_DIR) if f.endswith(".wav")]
+    if not audio_files:
+        logger.error(
+            "No audio files found in the sample audio directory."
+            + " Add max 30 seconds mono .wav files with sample rate of 22050Hz to the 'sample_audio' directory."
+        )
+        raise FileNotFoundError("No audio files found.")
+
+    print("Available audio files:")
+    for i, file in enumerate(audio_files):
+        print(f"{i + 1}: {file}")
+
+    choice = typer.prompt(
+        "Select an audio file by number",
+        type=int,
+        default=1,
+        show_choices=False,
+    )
+
+    while choice < 1 or choice > len(audio_files):
+        logger.error(
+            f"Invalid choice: {choice}. Please select a number between 1 and {len(audio_files)}."
+        )
+        choice = typer.prompt(
+            "Select an audio file by number",
+            type=int,
+            default=1,
+            show_choices=False,
+        )
+
+    return audio_files[choice - 1]
 
 
 def validate_input_audio(audio_file_path: Path) -> bool:

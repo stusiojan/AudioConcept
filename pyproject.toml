@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "AudioConcept"
-version = "0.0.1"
+version = "1.0.0"
 description = "Locating Musical Concepts in a Genre Classifier"
 authors = [
   { name = "I. Lengiewicz, J. Stusio" },

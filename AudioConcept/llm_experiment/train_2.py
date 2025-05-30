@@ -1,25 +1,26 @@
-import os
 import argparse
+import json
+import os
+import time
+import warnings
+
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
+from sklearn.metrics import classification_report, confusion_matrix
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.metrics import classification_report, confusion_matrix
-import seaborn as sns
 from tqdm import tqdm
-import json
-import time
-from pathlib import Path
-import warnings
+
+from AudioConcept.llm_experiment.dataset_2 import get_improved_dataloader
+from config import DATA_PATH, GTZAN_GENRES
 
 warnings.filterwarnings("ignore")
-
-# Import your improved dataset (assuming it's saved as gtzan_dataset.py)
-from dataset_2 import ImprovedGTZANDataset, get_improved_dataloader
-from config import GTZAN_GENRES, DATA_PATH
+"""
+LLM generated training script for GTZAN dataset classification.
+"""
 
 
 class MelSpectrogramCNN(nn.Module):
@@ -214,7 +215,7 @@ class GTZANTrainer:
             num_chunks=1,  # Reduce chunks to 1 for now
         )
 
-        print(f"Data loaded:")
+        print("Data loaded:")
         print(f"  Train batches: {len(self.train_loader)}")
         print(f"  Validation batches: {len(self.val_loader)}")
         print(f"  Test batches: {len(self.test_loader)}")
@@ -249,7 +250,7 @@ class GTZANTrainer:
 
             # Update progress bar
             pbar.set_postfix(
-                {"Loss": f"{loss.item():.4f}", "Acc": f"{100.*correct/total:.2f}%"}
+                {"Loss": f"{loss.item():.4f}", "Acc": f"{100.0 * correct / total:.2f}%"}
             )
 
         epoch_loss = running_loss / len(self.train_loader)
@@ -278,7 +279,10 @@ class GTZANTrainer:
                 correct += (predicted == target).sum().item()
 
                 pbar.set_postfix(
-                    {"Loss": f"{loss.item():.4f}", "Acc": f"{100.*correct/total:.2f}%"}
+                    {
+                        "Loss": f"{loss.item():.4f}",
+                        "Acc": f"{100.0 * correct / total:.2f}%",
+                    }
                 )
 
         epoch_loss = running_loss / len(self.val_loader)
@@ -447,7 +451,7 @@ class GTZANTrainer:
         try:
             # Training loop
             for epoch in range(start_epoch, self.args.epochs):
-                print(f"\nEpoch {epoch+1}/{self.args.epochs}")
+                print(f"\nEpoch {epoch + 1}/{self.args.epochs}")
                 print("-" * 50)
 
                 # Train
@@ -505,7 +509,7 @@ class GTZANTrainer:
 
         # Training completed
         training_time = time.time() - start_time
-        print(f"\nTraining completed in {training_time/3600:.2f} hours")
+        print(f"\nTraining completed in {training_time / 3600:.2f} hours")
         print(f"Best validation accuracy: {self.best_val_acc:.2f}%")
 
         # Plot training curves

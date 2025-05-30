@@ -6,8 +6,6 @@ channels:
   - https://repo.anaconda.com/pkgs/main
   - https://repo.anaconda.com/pkgs/r
 dependencies:
-  - _libgcc_mutex=0.1
-  - _openmp_mutex=4.5
   - absl-py=2.1.0
   - audioread=3.0.1
   - blas=1.0
@@ -21,15 +19,6 @@ dependencies:
   - cffi=1.17.1
   - charset-normalizer=3.4.0
   - contourpy=1.3.0
-  - cuda-cudart=12.4.127
-  - cuda-cudart_linux-64=12.4.127
-  - cuda-cupti=12.4.127
-  - cuda-libraries=12.4.1
-  - cuda-nvrtc=12.4.127
-  - cuda-nvtx=12.4.127
-  - cuda-opencl=12.4.127
-  - cuda-runtime=12.4.1
-  - cuda-version=12.4
   - cycler=0.12.1
   - decorator=5.1.1
   - ffmpeg=4.3
@@ -56,7 +45,6 @@ dependencies:
   - lazy-loader=0.4
   - lazy_loader=0.4
   - lcms2=2.15
-  - ld_impl_linux-64=2.43
   - lerc=4.0.0
   - libabseil=20240116.2
   - libasprintf=0.22.5
@@ -66,33 +54,17 @@ dependencies:
   - libbrotlidec=1.1.0
   - libbrotlienc=1.1.0
   - libcblas=3.9.0
-  - libcublas=12.4.5.8
-  - libcufft=11.2.1.3
-  - libcufile=1.9.1.3
-  - libcurand=10.3.5.147
-  - libcusolver=11.6.1.9
-  - libcusparse=12.3.1.170
   - libdeflate=1.17
   - libexpat=2.6.3
   - libffi=3.4.2
   - libflac=1.4.3
-  - libgcc=14.2.0
-  - libgcc-ng=14.2.0
   - libgettextpo=0.22.5
   - libgettextpo-devel=0.22.5
-  - libgfortran=14.2.0
-  - libgfortran5=14.2.0
-  - libgomp=14.2.0
   - libgrpc=1.62.2
   - libhwloc=2.11.1
   - libiconv=1.17
   - liblapack=3.9.0
   - libllvm14=14.0.6
-  - libnpp=12.2.5.30
-  - libnsl=2.0.1
-  - libnvfatbin=12.4.127
-  - libnvjitlink=12.4.127
-  - libnvjpeg=12.3.1.117
   - libogg=1.3.5
   - libopus=1.3.1
   - libpng=1.6.43
@@ -101,8 +73,6 @@ dependencies:
   - librosa=0.10.2.post1
   - libsndfile=1.2.2
   - libsqlite=3.46.0
-  - libstdcxx=14.2.0
-  - libstdcxx-ng=14.2.0
   - libtiff=4.5.0
   - libuuid=2.38.1
   - libvorbis=1.3.7
@@ -116,7 +86,6 @@ dependencies:
   - markdown=3.6
   - markupsafe=3.0.2
   - matplotlib-base=3.9.2
-  - mkl=2022.2.1
   - mpc=1.3.1
   - mpfr=4.2.1
   - mpg123=1.32.8
@@ -128,7 +97,6 @@ dependencies:
   - networkx=3.4.2
   - numba=0.59.1
   - numpy=1.26.4
-  - ocl-icd=2.3.2
   - openh264=2.1.1
   - openjpeg=2.5.0
   - openssl=3.3.2
@@ -150,7 +118,6 @@ dependencies:
   - python-tzdata=2024.2
   - python_abi=3.10
   - pytorch=2.5.1
-  - pytorch-cuda=12.4
   - pytorch-mutex=1.0
   - pytz=2024.1
   - pyyaml=6.0.2
@@ -174,7 +141,6 @@ dependencies:
   - threadpoolctl=3.5.0
   - tk=8.6.13
   - torchaudio=2.5.1
-  - torchtriton=3.1.0
   - typing_extensions=4.12.2
   - tzdata=2024b
   - unicodedata2=15.1.0
@@ -189,4 +155,10 @@ dependencies:
   - zlib=1.2.13
   - zstandard=0.23.0
   - zstd=1.5.6
-prefix: /home/mmo/miniconda3/envs/wimu
+  - wandb=0.19.11
+  - loguru==0.7.3
+  - python-dotenv=1.0.1
+  - ruff=0.9.10
+  - tqdm=4.67.1
+  - typer=0.15.2
+  - ipykernel=6.29.5
