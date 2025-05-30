@@ -3,11 +3,16 @@ from pathlib import Path
 from dotenv import load_dotenv
 from loguru import logger
 
+"""
+Configuration file for project.
+"""
+
+
 # Load environment variables from .env file if it exists
 load_dotenv()
 
-# Pick a model to train
-MODEL_TO_TRAIN = "SVM"  # "VGGish" or "CNN" or "SVM"
+# Pick a model to train: "VGGish" or "CNN" or "SVM"
+MODEL_TO_TRAIN = "SVM"
 
 # Paths
 PROJ_ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +30,7 @@ MODELS_DIR = PROJ_ROOT / "models"
 REPORTS_DIR = PROJ_ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
 
+# Dataset parameters
 GTZAN_GENRES = [
     "blues",
     "classical",
@@ -38,7 +44,7 @@ GTZAN_GENRES = [
     "rock",
 ]
 
-# NN data parameters
+# NN parameters
 LEARNING_RATE = 1e-2  # VGGish 3e-5  # cnn 0.007  # 3e-4
 NUM_EPOCHS = 60
 MODEL_PATIENCE = 15
@@ -68,7 +74,7 @@ VGG16_ARCHITECTURE = [
     # Then 4096x4096x1000 linear layers - here 4096x4096x10
 ]
 
-# SVM data parameters
+# SVM parameters
 SVM_TEST_SIZE = 0.2  # Proportion of dataset to include in the test split
 SVM_RANDOM_STATE = 42
 SVM_PARAM_GRID = {

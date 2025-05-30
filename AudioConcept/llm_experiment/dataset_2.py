@@ -12,6 +12,10 @@ from config import DATA_PATH, GTZAN_GENRES
 
 warnings.filterwarnings("ignore")
 
+"""
+LLM generated data processing script for GTZAN dataset.
+"""
+
 
 class SpectrogramTransforms:
     """Spectrogram-based augmentations - more efficient and effective"""

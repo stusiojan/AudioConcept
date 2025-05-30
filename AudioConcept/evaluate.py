@@ -5,9 +5,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from loguru import logger
 from sklearn.metrics import accuracy_score, confusion_matrix
-from AudioConcept.modeling.model_cnn import CNN
-from AudioConcept.modeling.model_vggish import VGGish
-from AudioConcept.modeling.classifier_svm import SVMClassifier
+from AudioConcept.models.model_cnn import CNN
+from AudioConcept.models.model_vggish import VGGish
+from AudioConcept.models.classifier_svm import SVMClassifier
 from AudioConcept.dataset import get_data_loaders, gtzan_features_data, AudioLength
 from AudioConcept.config import (
     MODEL_TO_TRAIN,
@@ -19,6 +19,11 @@ from AudioConcept.config import (
 from datetime import datetime
 
 app = typer.Typer()
+
+"""
+Evaluate a trained model on the GTZAN dataset.
+Saves results to the specified directories.
+"""
 
 
 @app.command()

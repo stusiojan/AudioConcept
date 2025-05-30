@@ -32,6 +32,11 @@ from AudioConcept.config import (
 app = typer.Typer()
 
 
+"""
+Prepare the GTZAN dataset for training, evaluation and testing.
+"""
+
+
 class AudioLength(Enum):
     CNN = 22050 * 29.1
     VGG = 22050 * 3.96

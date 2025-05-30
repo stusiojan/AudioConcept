@@ -82,7 +82,6 @@ class VGGish(nn.Module):
 
         for x in architecture:
             if type(x) == int:
-                # print(f"Input channels: {in_channels}")
                 out_channels = x
 
                 layers += [
@@ -106,43 +105,24 @@ class VGGish(nn.Module):
     def forward(self, wav):
         # input preprocessing
         out = self.melspec(wav)
-        # print(f"Mel spectrogram shape: {out.shape}")
         out = self.amplitude_to_db(out)
-        # print(f"Amplitude to dB shape: {out.shape}")
 
         # input batch normalization
         out = out.unsqueeze(1)
         out = self.input_bn(out)
-        # print(f"Input batch normalization shape: {out.shape}")
 
         # Reshape from [batch, 1, 128, 1249] to [batch, 1, 224, 224]
         out = nn.functional.interpolate(
             out, size=(224, 224), mode="bilinear", align_corners=False
         )
-        # print(f"After reshaping to 224x224: {out.shape}")
-
-        # # expand to 16 channels (repeat the same data across channels)
-        # out = out.repeat(1, self.in_channels, 1, 1)
-        # print(f"After channel expansion shape: {out.shape}")
-        # out here should be in this format: torch.randn(n, 16, 224, 224).to(device)
 
         # convolutional layers
         out = self.conv_layers(out)
-        # print(f"Convolutional layers shape: {out.shape}")
 
         # reshape (batch_size, num_channels, 1, 1) -> (batch_size, num_channels)
-        # out = out.reshape(out.shape[0], -1)
         out = out.reshape(len(out), -1)
-        # print(f"Reshaped output shape: {out.shape}")
 
         # fully connected layers
         out = self.fcs(out)
-        # print(f"Fully connected layers output shape: {out.shape}")
-        # example output shapes
-        # Mel spectrogram shape: torch.Size([16, 128, 1249])
-        # Amplitude to dB shape: torch.Size([16, 128, 1249])
-        # Input batch normalization shape: torch.Size([16, 1, 128, 1249])
-        # Convolutional layers shape: torch.Size([16, 512, 4, 39])
-        # Reshaped output shape: torch.Size([16, 79872])
 
         return out

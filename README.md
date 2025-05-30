@@ -1,5 +1,6 @@
 # AudioConcept
 
+![Version](https://img.shields.io/badge/AudioConcept-1.0.0-orange)
 <a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
     <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
 </a>
@@ -10,6 +11,7 @@
 - [Project Organization](#organization)
 - [Setup](#setup)
 - [Usage](#usage)
+- [Sources](#sources)
 
 
 <h2 id="about">🧐 About</h2>
@@ -173,8 +175,19 @@ In order to see classification results for SVM you must be a member of AudioConc
 
 Plots will be placed in `reports/figures` directory.
 
-# Sources
+<h2 id="sources">ℹ️ Sources</h2>
 
 CNN implementation is based on [mamodrzejewski GTZAN genre classification example](https://github.com/mamodrzejewski/wimu-gtzan-genre-example), which is based on [Music Classification: Beyond Supervised Learning, Towards Real-world Applications](https://music-classification.github.io/tutorial/part3_supervised/tutorial.html) by Minz Won, Janne Spijkervet and Keunwoo Choi.
 
 VGGish implementation is based on VGGish architecture for genre classification [paper](https://arxiv.org/pdf/1609.09430) and Aladdin Persson VGG torch [tutorial](https://www.youtube.com/watch?v=ACmuBbuXn20).
+
+### Literature
+
+| Title         | Comments      | Link |
+| ------------- | ------------- |------|
+| “Musical Genre Classification Using Advanced Audio Analysis and Deep Learning Techniques”   | Trening klasyfikacji przeprowadzono na zbiorach danych GTZAN oraz ISMIR2004. Do klasyfikacji gatunków muzycznych wykorzystano modele FNN, CNN, RNN-LSTM, SVM i KNN. Preprocessing obejmował ekstrakcję cech (MFCC, FFT, STFT), a optymalizację przeprowadzono za pomocą dropoutu, L2 regularization i batch normalization.| [link](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=10605044) |
+| Constructing adversarial examples to investigate the plausibility of explanations in deep audio and image classifiers  | Researchers tests how plausible the explainers are by feeding them deliberately  perturbed input data. In audio domain LIME was tested and it does not handle it well. "...the explanation method LIME is not able to recover perturbed segments in a satisfactory manner, with even the baseline performing better". The tested audio was recorded voice.  | [link](https://link.springer.com/article/10.1007/s00521-022-07918-7#notes) |
+| “audioLIME: Listenable Explanations Using Source Separation” | audioLIME wykorzystuje separację źródeł dźwięku, aby wyjaśnienia były słuchalne. Można stosować do modeli klasyfikujących muzykę aby zrozumieć, które komponenty dźwięku miały kluczowy wpływ na predykcję modelu.| [link](https://arxiv.org/pdf/2008.00582v3.pdf) |
+| “Tracing Back Music Emotion Predictions to Sound Sources and Intuitive Perceptual Qualities” | Artykuł rozszerza audioLIME, dodając średniopoziomowe cechy percepcyjne (np. barwę, rytm, dynamikę), aby lepiej zrozumieć, jak model interpretuje emocje w muzyce. Pomaga wykryć bias w modelach klasyfikujących emocje w muzyce i sprawia, że wyjaśnienia są bliższe temu, jak ludzie rozumieją muzykę. | [link](https://arxiv.org/pdf/2106.07787v2.pdf) |
+| CNN ARCHITECTURES FOR LARGE-SCALE AUDIO CLASSIFICATION | VGG-ish / Short-chunk CNNs | [link](https://arxiv.org/pdf/1703.09179) |
+| MUSIC GENRE CLASSIFIER WITH DEEP NEURAL NETWORKS | CNNs with over 0.8 accuracy trained on enhanced GTZAN | [link](https://github.com/XiplusChenyu/Musical-Genre-Classification/blob/master/music_genre_classification.pdf) |

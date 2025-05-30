@@ -15,6 +15,10 @@ import time
 from pathlib import Path
 import warnings
 
+"""
+LLM generated training script for GTZAN dataset classification.
+"""
+
 warnings.filterwarnings("ignore")
 
 # Import your improved dataset (assuming it's saved as gtzan_dataset.py)

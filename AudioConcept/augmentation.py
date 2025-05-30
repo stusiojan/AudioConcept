@@ -5,6 +5,12 @@ import random
 from typing import List
 import scipy.signal
 
+"""
+Due to dependency issues with torchaudio and librosa, we implement audio transformations.
+
+Due to memory constraints, we use numpy arrays instead of torch tensors.
+"""
+
 
 class AudioTransform:
     """Base class for audio transformations"""

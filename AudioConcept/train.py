@@ -21,10 +21,10 @@ import torch
 from torch import nn
 import matplotlib.pyplot as plt
 import json
-from AudioConcept.modeling.model_cnn import CNN
-from AudioConcept.modeling.model_cnn2 import CNN2
-from AudioConcept.modeling.model_vggish import VGGish
-from AudioConcept.modeling.classifier_svm import SVMClassifier
+from AudioConcept.models.model_cnn import CNN
+from AudioConcept.models.model_cnn2 import CNN2
+from AudioConcept.models.model_vggish import VGGish
+from AudioConcept.models.classifier_svm import SVMClassifier
 from AudioConcept.dataset import get_data_loaders, gtzan_features_data, AudioLength
 from sklearn.metrics import accuracy_score
 from datetime import datetime
@@ -32,6 +32,14 @@ from torch.utils.tensorboard import SummaryWriter
 import torch.nn.functional as F
 
 app = typer.Typer()
+
+"""
+Main entry point for training and experimenting with audio classification models.
+
+main: Trains a specified model on the GTZAN dataset.
+experiment: Runs an experiment with specified hyperparameters on the GTZAN dataset.
+
+"""
 
 
 @app.command()

@@ -2,6 +2,13 @@ import torch.nn as nn
 
 
 class MelSpectrogramCNN(nn.Module):
+    """
+    The task of training CNN on GTZAN dataset is to classify audio genres
+    is a common theme in audio processing, so We tried to fully generate
+    training pipeline with LLM. This resulted with this CNN model, llm_experiment/train_2.py
+    and llm_experiment/evaluate_2.py scripts.
+    """
+
     def __init__(self, num_classes=10):
         super().__init__()
 

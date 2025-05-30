@@ -1,6 +1,12 @@
 from torch import nn
 import torchaudio
 
+"""
+CNN model for audio classification.
+
+CNN implementation is based on [mamodrzejewski GTZAN genre classification example](https://github.com/mamodrzejewski/wimu-gtzan-genre-example), which is based on [Music Classification: Beyond Supervised Learning, Towards Real-world Applications](https://music-classification.github.io/tutorial/part3_supervised/tutorial.html) by Minz Won, Janne Spijkervet and Keunwoo Choi.
+"""
+
 
 class Conv_2d(nn.Module):
     def __init__(
@@ -9,7 +15,7 @@ class Conv_2d(nn.Module):
         output_channels,
         shape=3,
         pooling=2,
-        dropout=0.1,  # maybe 0.3
+        dropout=0.1,
     ):
         super(Conv_2d, self).__init__()
         self.conv = nn.Conv2d(
@@ -93,14 +99,4 @@ class CNN(nn.Module):
         out = self.dropout(out)
         out = self.dense2(out)
 
-        # example output shapes
-        # Mel spectrogram shape: torch.Size([16, 128, 1249])
-        # Amplitude to dB shape: torch.Size([16, 128, 1249])
-        # Input batch normalization shape: torch.Size([16, 1, 128, 1249])
-        # Convolutional layer 1 shape: torch.Size([16, 16, 64, 416])
-        # Convolutional layer 2 shape: torch.Size([16, 16, 21, 104])
-        # Convolutional layer 3 shape: torch.Size([16, 32, 10, 20])
-        # Convolutional layer 4 shape: torch.Size([16, 32, 3, 6])
-        # Convolutional layer 5 shape: torch.Size([16, 64, 1, 1])
-        # Dense layer output shape: torch.Size([16, 10])
         return out

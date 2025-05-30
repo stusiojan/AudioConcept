@@ -20,11 +20,15 @@ from AudioConcept.config import (
     GTZAN_GENRES,
     VALIDATION_PARAMS,
 )
-from AudioConcept.modeling.classifier_svm import SVMClassifier
-from AudioConcept.modeling.model_cnn import CNN
-from AudioConcept.modeling.model_vggish import VGGish
+from AudioConcept.models.classifier_svm import SVMClassifier
+from AudioConcept.models.model_cnn import CNN
+from AudioConcept.models.model_vggish import VGGish
 
 app = typer.Typer()
+
+"""
+Command-line interface for performing genre prediction on audio files using trained models.
+"""
 
 
 @app.command()
