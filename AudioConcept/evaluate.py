@@ -8,7 +8,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix
 from AudioConcept.modeling.model_cnn import CNN
 from AudioConcept.modeling.model_vggish import VGGish
 from AudioConcept.modeling.classifier_svm import SVMClassifier
-from AudioConcept.dataset import test_loader, gtzan_features_data
+from AudioConcept.dataset import get_data_loaders, gtzan_features_data, AudioLength
 from AudioConcept.config import (
     MODEL_TO_TRAIN,
     MODELS_DIR,
@@ -27,9 +27,27 @@ def main(
     model_path: str = MODELS_DIR,
     report_path: str = REPORTS_DIR,
     figures_path: str = FIGURES_DIR,
+    audio_length: str = typer.Option(
+        None,
+        help="Audio length to use for training (CNN or VGG)",
+    ),
 ):
     device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+    if audio_length is None:
+        audio_length = AudioLength.CNN
+    else:
+        try:
+            audio_length = AudioLength[audio_length.upper()]
+        except KeyError:
+            logger.error(
+                f"Invalid audio length name: {audio_length}. Must be 'CNN' or 'VGG'."
+            )
+            raise ValueError(
+                f"Invalid audio length name: {audio_length}. Must be 'CNN' or 'VGG'."
+            )
+    _, _, test_loader = get_data_loaders(audio_length)
+
     match model_to_train:
         case "VGGish":
             model = VGGish().to(device)

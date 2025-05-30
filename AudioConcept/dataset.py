@@ -1,14 +1,14 @@
 import os
+from loguru import logger
 import random
-import torch
 import typer
 import numpy as np
 import soundfile as sf
 import pandas as pd
-import librosa  # Add missing import
+import librosa
 from pathlib import Path
 from torch.utils import data
-from AudioConcept.modeling.augmentation import (
+from AudioConcept.augmentation import (
     Compose,
     RandomResizedCrop,
     RandomApply,
@@ -119,7 +119,7 @@ class GTZANDataset(data.Dataset):
             try:
                 wav, fs = sf.read(audio_filename)
             except Exception as e:
-                print(f"Error loading {audio_filename} with soundfile: {e}")
+                logger.error(f"Error loading {audio_filename} with soundfile: {e}")
                 wav, fs = librosa.load(audio_filename, sr=self.sample_rate, mono=True)
 
             if len(wav.shape) > 1:
@@ -138,7 +138,7 @@ class GTZANDataset(data.Dataset):
             return wav, genre_index
 
         except Exception as e:
-            print(f"Error processing sample {index}: {e}")
+            logger.error(f"Error processing sample {index}: {e}")
             if self.split == "train":
                 return np.zeros(self.num_samples, dtype=np.float32), 0
             else:
@@ -155,7 +155,7 @@ class GTZANDataset(data.Dataset):
             audio, sr = librosa.load(file_path, sr=self.sample_rate, mono=True)
             return audio
         except Exception as e:
-            print(f"Error loading {file_path}: {e}")
+            logger.error(f"Error loading {file_path}: {e}")
             return np.zeros(self.num_samples)
 
 
@@ -208,7 +208,7 @@ def gtzan_features_data(
 
 
 def test_augmentation():
-    print("Testing librosa-based audio augmentations...")
+    logger.info("Testing librosa-based audio augmentations...")
 
     # Dummy audio
     sample_rate = 22050
@@ -218,8 +218,8 @@ def test_augmentation():
         np.float32
     )
 
-    print(f"Original audio shape: {audio.shape}")
-    print(f"Original audio RMS: {np.sqrt(np.mean(audio**2)):.4f}")
+    logger.info(f"Original audio shape: {audio.shape}")
+    logger.info(f"Original audio RMS: {np.sqrt(np.mean(audio**2)):.4f}")
 
     augmentations = Compose(
         [
@@ -232,40 +232,44 @@ def test_augmentation():
 
     for i in range(3):
         augmented_audio = augmentations(audio.copy(), sample_rate)
-        print(
+        logger.info(
             f"Augmented audio {i+1} - Shape: {augmented_audio.shape}, RMS: {np.sqrt(np.mean(augmented_audio**2)):.4f}"
         )
 
-    print("Augmentation pipeline test completed successfully!")
+    logger.info("Augmentation pipeline test completed successfully!")
 
 
-# Create data loaders
-train_loader = get_dataloader(
-    split="train",
-    audio_length=AudioLength.CNN,
-    is_augmentation=True,
-    batch_size=6,
-    num_workers=0,
-)
-valid_loader = get_dataloader(
-    split="valid",
-    audio_length=AudioLength.CNN,
-    is_augmentation=False,
-    batch_size=16,
-    num_workers=2,
-)
-test_loader = get_dataloader(
-    split="test",
-    audio_length=AudioLength.CNN,
-    is_augmentation=False,
-    batch_size=16,
-    num_workers=2,
-)
+def get_data_loaders(audioLength: AudioLength = AudioLength.CNN):
+    logger.info(f"Using audio length: {audioLength.name} : {audioLength.value} samples")
+    train_loader = get_dataloader(
+        split="train",
+        audio_length=audioLength,
+        is_augmentation=True,
+        batch_size=6,
+        num_workers=0,
+    )
+    valid_loader = get_dataloader(
+        split="valid",
+        audio_length=audioLength,
+        is_augmentation=False,
+        batch_size=16,
+        num_workers=2,
+    )
+    test_loader = get_dataloader(
+        split="test",
+        audio_length=audioLength,
+        is_augmentation=False,
+        batch_size=16,
+        num_workers=2,
+    )
+    return train_loader, valid_loader, test_loader
 
 
 @app.command()
 def main():
     try:
+        train_loader, _, test_loader = get_data_loaders()
+
         iter_train_loader = iter(train_loader)
         train_wav, train_genre = next(iter_train_loader)
         iter_test_loader = iter(test_loader)
@@ -274,16 +278,16 @@ def main():
         try:
             gtzan_features_data()
         except FileNotFoundError:
-            print("Features file not found, skipping feature loading test")
+            logger.error("Features file not found, skipping feature loading test")
 
-        print("Training data shape: %s" % str(train_wav.shape))
-        print("Training targets: ", train_genre)
-        print("Validation/test data shape: %s" % str(test_wav.shape))
-        print("Validation/test targets: ", test_genre)
+        logger.info(f"Training data shape: {train_wav.shape}")
+        logger.info(f"Training targets: {train_genre}")
+        logger.info(f"Validation/test data shape: {test_wav.shape}")
+        logger.info(f"Validation/test targets: {test_genre}")
 
         test_augmentation()
 
-        print("\nTesting with augmentation enabled...")
+        logger.info("\nTesting with augmentation enabled...")
         augmented_loader = get_dataloader(
             split="train",
             audio_length=AudioLength.CNN,
@@ -294,11 +298,11 @@ def main():
 
         iter_augmented_loader = iter(augmented_loader)
         aug_wav, aug_genre = next(iter_augmented_loader)
-        print("Augmented training data shape: %s" % str(aug_wav.shape))
-        print("Augmented training targets: ", aug_genre)
+        logger.info(f"Augmented training data shape: {aug_wav.shape}")
+        logger.info(f"Augmented training targets: {aug_genre}")
 
     except Exception as e:
-        print(f"Error in main: {e}")
+        logger.error(f"Error in main: {e}")
         import traceback
 
         traceback.print_exc()

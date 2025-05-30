@@ -18,7 +18,10 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # Import your improved dataset (assuming it's saved as gtzan_dataset.py)
-from dataset_2 import ImprovedGTZANDataset, get_improved_dataloader
+from AudioConcept.llm_experiment.dataset_2 import (
+    ImprovedGTZANDataset,
+    get_improved_dataloader,
+)
 from config import GTZAN_GENRES, DATA_PATH
 
 

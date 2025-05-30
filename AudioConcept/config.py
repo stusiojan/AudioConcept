@@ -11,7 +11,6 @@ MODEL_TO_TRAIN = "SVM"  # "VGGish" or "CNN" or "SVM"
 
 # Paths
 PROJ_ROOT = Path(__file__).resolve().parents[1]
-logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
 
 DATA_DIR = PROJ_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
@@ -40,7 +39,7 @@ GTZAN_GENRES = [
 ]
 
 # NN data parameters
-LEARNING_RATE = 3e-5  # cnn 0.007  # 3e-4
+LEARNING_RATE = 1e-2  # VGGish 3e-5  # cnn 0.007  # 3e-4
 NUM_EPOCHS = 60
 MODEL_PATIENCE = 15
 WEIGHT_DECAY = 8e-4  # 5e-4

@@ -25,7 +25,7 @@ from AudioConcept.modeling.model_cnn import CNN
 from AudioConcept.modeling.model_cnn2 import CNN2
 from AudioConcept.modeling.model_vggish import VGGish
 from AudioConcept.modeling.classifier_svm import SVMClassifier
-from AudioConcept.dataset import train_loader, valid_loader, gtzan_features_data
+from AudioConcept.dataset import get_data_loaders, gtzan_features_data, AudioLength
 from sklearn.metrics import accuracy_score
 from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
@@ -39,9 +39,18 @@ def main(
     model_to_train: str = typer.Argument(default=MODEL_TO_TRAIN),
     model_path: Path = MODELS_DIR,
     figures_path: Path = FIGURES_DIR,
+    audio_length: str = typer.Option(
+        None,
+        help="Audio length to use for training (CNN or VGG)",
+    ),
 ):
     logger.info(f"Training {model_to_train}...")
-    train_model(model_to_train, model_path, figures_path)
+    train_model(
+        model_to_train=model_to_train,
+        model_path=model_path,
+        figures_path=figures_path,
+        audio_length=audio_length,
+    )
     logger.success("Training complete.")
 
 
@@ -50,6 +59,9 @@ def experiment(
     model_to_train: str = typer.Argument(default=MODEL_TO_TRAIN),
     model_path: Path = MODELS_DIR,
     figures_path: Path = FIGURES_DIR,
+    audio_length: str = typer.Option(
+        None, help="Audio length to use for training (CNN or VGG)"
+    ),
     lr: float = typer.Option(None, help="Learning rate to experiment with"),
     weight_decay: float = typer.Option(None, help="Weight decay to experiment with"),
     label_smoothing: float = typer.Option(
@@ -57,16 +69,15 @@ def experiment(
     ),
     noise_level: float = typer.Option(None, help="Noise level for data augmentation"),
 ):
-    """Run training experiments with different hyperparameters"""
     logger.info(f"Running experiment for {model_to_train}...")
     logger.info(
         f"Experiment params: LR={lr}, WD={weight_decay}, LS={label_smoothing}, Noise={noise_level}"
     )
-
     final_acc = train_model(
         model_to_train,
         model_path,
         figures_path,
+        audio_length,
         experiment_lr=lr,
         experiment_weight_decay=weight_decay,
         experiment_label_smoothing=label_smoothing,
@@ -78,7 +89,8 @@ def experiment(
 def train_model(
     model_to_train: str,
     model_path: Path,
-    figures_path: Path = FIGURES_DIR,
+    figures_path: Path,
+    audio_length: str = None,
     experiment_lr: float = None,
     experiment_weight_decay: float = None,
     experiment_label_smoothing: float = None,
@@ -88,6 +100,21 @@ def train_model(
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     experiment_name = f"GTZAN_{model_to_train}_{timestamp}_LR_{LEARNING_RATE}"
     writer = SummaryWriter(f"runs/{experiment_name}")
+
+    # data loading
+    if audio_length is None:
+        audio_length = AudioLength.CNN
+    else:
+        try:
+            audio_length = AudioLength[audio_length.upper()]
+        except KeyError:
+            logger.error(
+                f"Invalid audio length name: {audio_length}. Must be 'CNN' or 'VGG'."
+            )
+            raise ValueError(
+                f"Invalid audio length name: {audio_length}. Must be 'CNN' or 'VGG'."
+            )
+    train_loader, valid_loader, test_loader = get_data_loaders(audio_length)
 
     # model setup
     device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")

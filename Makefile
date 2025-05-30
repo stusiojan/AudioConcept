@@ -16,8 +16,6 @@ PYTHON_INTERPRETER = python
 requirements:
 	$(PYTHON_INTERPRETER) -m pip install -U pip
 	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
-	
-
 
 
 ## Delete all compiled Python files
@@ -39,17 +37,17 @@ format:
 	ruff check --fix
 	ruff format
 
-
-
-
-
 ## Set up Python interpreter environment
 .PHONY: create_environment
 create_environment:
 	@bash -c "if [ ! -z `which virtualenvwrapper.sh` ]; then source `which virtualenvwrapper.sh`; mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); else mkvirtualenv.bat $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); fi"
 	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
 	
-
+## Set up Python interpreter environment with conda
+.PHONY: create_conda_environment
+create_conda_environment:
+	@bash -c "if [ ! -z `which conda` ]; then conda create --name $(PROJECT_NAME) python=$(PYTHON_VERSION); else echo 'Conda is not installed.'; fi"
+	@echo ">>> New conda environment created. Activate with:\nconda activate $(PROJECT_NAME)"
 
 
 #################################################################################
@@ -59,8 +57,64 @@ create_environment:
 
 ## Make dataset
 .PHONY: data
-data: requirements
-	$(PYTHON_INTERPRETER) AudioConcept/dataset.py
+data:
+	$(PYTHON_INTERPRETER) -m AudioConcept.dataset
+
+## Train CNN model
+.PHONY: train_cnn
+train_cnn:
+	$(PYTHON_INTERPRETER) -m AudioConcept.train main CNN
+
+## Train VGGish model
+.PHONY: train_vgg
+train_vgg:
+	$(PYTHON_INTERPRETER) -m AudioConcept.train main VGGish
+
+## Train VGGish model on 3,96s audio
+.PHONY: train_short_chunk_vgg
+train_short_chunk_vgg:
+	$(PYTHON_INTERPRETER) -m AudioConcept.train main VGGish --audio-length VGG
+
+## Train SVM model
+.PHONY: train_svm
+train_svm:
+	$(PYTHON_INTERPRETER) -m AudioConcept.train main SVM
+
+
+## Evaluate CNN model
+.PHONY: evaluate_cnn
+evaluate_cnn:
+	$(PYTHON_INTERPRETER) -m AudioConcept.evaluate CNN
+
+## Evaluate VGGish model
+.PHONY: evaluate_vgg
+evaluate_vgg:
+	$(PYTHON_INTERPRETER) -m AudioConcept.evaluate VGGish
+
+## Evaluate VGGish model on 3,96s audio
+.PHONY: evaluate_short_chunk_vgg
+evaluate_short_chunk_vgg:
+	$(PYTHON_INTERPRETER) -m AudioConcept.evaluate VGGish --audio-length VGG
+
+## Evaluate SVM model
+.PHONY: evaluate_svm
+evaluate_svm:
+	$(PYTHON_INTERPRETER) -m AudioConcept.evaluate SVM
+
+## Predict using CNN model
+.PHONY: predict_cnn
+predict_cnn:
+	$(PYTHON_INTERPRETER) -m AudioConcept.predict CNN
+
+## Predict using VGGish model
+.PHONY: predict_vgg
+predict_vgg:
+	$(PYTHON_INTERPRETER) -m AudioConcept.predict VGGish
+
+## Predict using SVM model
+.PHONY: predict_svm
+predict_svm:
+	$(PYTHON_INTERPRETER) -m AudioConcept.predict SVM
 
 
 #################################################################################
