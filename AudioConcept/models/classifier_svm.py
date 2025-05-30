@@ -1,14 +1,16 @@
 import pickle
-import wandb
+
+from loguru import logger
+import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVC
+import wandb
+
 from AudioConcept.config import GTZAN_GENRES, SVM_PARAM_GRID
-from loguru import logger
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
 
 
 class SVMClassifier:

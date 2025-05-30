@@ -1,32 +1,34 @@
+from enum import Enum
 import os
-from loguru import logger
-import random
-import typer
-import numpy as np
-import soundfile as sf
-import pandas as pd
-import librosa
 from pathlib import Path
+import random
+
+import librosa
+from loguru import logger
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import soundfile as sf
 from torch.utils import data
+import typer
+
 from AudioConcept.augmentation import (
     Compose,
-    RandomResizedCrop,
-    RandomApply,
-    PolarityInversion,
-    Noise,
+    Delay,
     Gain,
     HighLowPass,
-    Delay,
+    Noise,
+    PolarityInversion,
+    RandomApply,
+    RandomResizedCrop,
     TimeStretch,
 )
-from enum import Enum
-from sklearn.model_selection import train_test_split
 from AudioConcept.config import (
     DATA_PATH,
-    PROCESSED_DATA_DIR,
     GTZAN_GENRES,
-    SVM_TEST_SIZE,
+    PROCESSED_DATA_DIR,
     SVM_RANDOM_STATE,
+    SVM_TEST_SIZE,
 )
 
 app = typer.Typer()
@@ -196,7 +198,6 @@ def get_dataloader(
 def gtzan_features_data(
     features_path: Path = PROCESSED_DATA_DIR / "processed_dataset.csv",
 ):
-
     def _get_features(processed_data):
         """Load data from processed dataset."""
         df = pd.read_csv(processed_data)
@@ -238,7 +239,7 @@ def test_augmentation():
     for i in range(3):
         augmented_audio = augmentations(audio.copy(), sample_rate)
         logger.info(
-            f"Augmented audio {i+1} - Shape: {augmented_audio.shape}, RMS: {np.sqrt(np.mean(augmented_audio**2)):.4f}"
+            f"Augmented audio {i + 1} - Shape: {augmented_audio.shape}, RMS: {np.sqrt(np.mean(augmented_audio**2)):.4f}"
         )
 
     logger.info("Augmentation pipeline test completed successfully!")

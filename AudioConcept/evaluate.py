@@ -1,22 +1,24 @@
+from datetime import datetime
+import pickle
+
+from loguru import logger
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import accuracy_score, confusion_matrix
 import torch
 import typer
-import pickle
-import seaborn as sns
-import matplotlib.pyplot as plt
-from loguru import logger
-from sklearn.metrics import accuracy_score, confusion_matrix
-from AudioConcept.models.model_cnn import CNN
-from AudioConcept.models.model_vggish import VGGish
-from AudioConcept.models.classifier_svm import SVMClassifier
-from AudioConcept.dataset import get_data_loaders, gtzan_features_data, AudioLength
+
 from AudioConcept.config import (
+    FIGURES_DIR,
+    GTZAN_GENRES,
     MODEL_TO_TRAIN,
     MODELS_DIR,
     REPORTS_DIR,
-    FIGURES_DIR,
-    GTZAN_GENRES,
 )
-from datetime import datetime
+from AudioConcept.dataset import AudioLength, get_data_loaders, gtzan_features_data
+from AudioConcept.models.classifier_svm import SVMClassifier
+from AudioConcept.models.model_cnn import CNN
+from AudioConcept.models.model_vggish import VGGish
 
 app = typer.Typer()
 
@@ -107,7 +109,7 @@ def main(
 
     accuracy = accuracy_score(y_true, y_pred)
     cm = confusion_matrix(y_true, y_pred)
-    conf_matrix = sns.heatmap(
+    sns.heatmap(
         cm,
         annot=True,
         xticklabels=GTZAN_GENRES,

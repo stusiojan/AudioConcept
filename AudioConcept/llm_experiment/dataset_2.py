@@ -1,13 +1,14 @@
 import os
 import random
-import torch
+from typing import Tuple
+import warnings
+
+import librosa
 import numpy as np
 import soundfile as sf
-import librosa
-from pathlib import Path
+import torch
 from torch.utils import data
-from typing import Tuple, Optional
-import warnings
+
 from config import DATA_PATH, GTZAN_GENRES
 
 warnings.filterwarnings("ignore")
@@ -163,7 +164,6 @@ class ImprovedGTZANDataset(data.Dataset):
         augment: bool = False,
         num_chunks: int = 1,
     ):
-
         self.data_path = data_path
         self.split = split
         self.genres = genres

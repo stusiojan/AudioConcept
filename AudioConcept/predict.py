@@ -1,28 +1,22 @@
+import os
 from pathlib import Path
 import pickle
-import os
 
-from loguru import logger
-from tqdm import tqdm
-import typer
-import numpy as np
-import pandas as pd
-import soundfile as sf
 import librosa
+from loguru import logger
+import numpy as np
+import soundfile as sf
 import torch
+import typer
 
 from AudioConcept.config import (
-    MODELS_DIR,
-    PROCESSED_DATA_DIR,
-    SAMPLE_AUDIO_DIR,
-    MODEL_TO_TRAIN,
-    REPORTS_DIR,
     GTZAN_GENRES,
+    MODEL_TO_TRAIN,
+    MODELS_DIR,
+    REPORTS_DIR,
+    SAMPLE_AUDIO_DIR,
     VALIDATION_PARAMS,
 )
-from AudioConcept.models.classifier_svm import SVMClassifier
-from AudioConcept.models.model_cnn import CNN
-from AudioConcept.models.model_vggish import VGGish
 
 app = typer.Typer()
 

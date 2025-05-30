@@ -1,35 +1,34 @@
+from datetime import datetime
+import json
 from pathlib import Path
-from loguru import logger
-from tqdm import tqdm
 import pickle
 
-from AudioConcept.config import (
-    MODELS_DIR,
-    FIGURES_DIR,
-    MODEL_TO_TRAIN,
-    LEARNING_RATE,
-    NUM_EPOCHS,
-    SVM_RANDOM_STATE,
-    MODEL_PATIENCE,
-    WEIGHT_DECAY,
-    LABEL_SMOOTHING,
-    NOISE_LEVEL,
-)
-import typer
+from loguru import logger
+import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.metrics import accuracy_score
 import torch
 from torch import nn
-import matplotlib.pyplot as plt
-import json
-from AudioConcept.models.model_cnn import CNN
-from AudioConcept.models.model_cnn2 import CNN2
-from AudioConcept.models.model_vggish import VGGish
-from AudioConcept.models.classifier_svm import SVMClassifier
-from AudioConcept.dataset import get_data_loaders, gtzan_features_data, AudioLength
-from sklearn.metrics import accuracy_score
-from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
-import torch.nn.functional as F
+from tqdm import tqdm
+import typer
+
+from AudioConcept.config import (
+    FIGURES_DIR,
+    LABEL_SMOOTHING,
+    LEARNING_RATE,
+    MODEL_PATIENCE,
+    MODEL_TO_TRAIN,
+    MODELS_DIR,
+    NOISE_LEVEL,
+    NUM_EPOCHS,
+    SVM_RANDOM_STATE,
+    WEIGHT_DECAY,
+)
+from AudioConcept.dataset import AudioLength, get_data_loaders, gtzan_features_data
+from AudioConcept.models.classifier_svm import SVMClassifier
+from AudioConcept.models.model_cnn import CNN
+from AudioConcept.models.model_vggish import VGGish
 
 app = typer.Typer()
 
@@ -204,7 +203,7 @@ def train_model(
         logger.info(f"Training epoch {epoch + 1}/{num_epochs}...")
         model.train()
 
-        train_pbar = tqdm(train_loader, desc=f"Epoch {epoch+1} Train")
+        train_pbar = tqdm(train_loader, desc=f"Epoch {epoch + 1} Train")
 
         for batch_idx, (wav, genre_index) in enumerate(train_pbar):
             wav = wav.to(device)
@@ -265,7 +264,7 @@ def train_model(
         y_pred = []
         losses = []
 
-        valid_pbar = tqdm(valid_loader, desc=f"Epoch {epoch+1} Valid")
+        valid_pbar = tqdm(valid_loader, desc=f"Epoch {epoch + 1} Valid")
 
         with torch.no_grad():
             for wav, genre_index in valid_pbar:

@@ -1,6 +1,7 @@
 from torch import nn
-from AudioConcept.config import VGG16_ARCHITECTURE
 import torchaudio
+
+from AudioConcept.config import VGG16_ARCHITECTURE
 
 
 class VGGish(nn.Module):
@@ -81,7 +82,7 @@ class VGGish(nn.Module):
         in_channels = self.in_channels
 
         for x in architecture:
-            if type(x) == int:
+            if type(x) is int:
                 out_channels = x
 
                 layers += [
