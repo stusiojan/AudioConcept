@@ -140,17 +140,8 @@ class AudioFeatureExtractor:
             pd.DataFrame: Processed DataFrame with standardized features and encoded labels
         """
         logger.info(f"Processing dataset from {input_path}...")
-        df = pd.read_csv(input_path, sep=";")
-
-        # # Check if any string values need to be converted
-        # for col in df.columns:
-        #     if df[col].dtype == 'object':
-        #         try:
-        #             # Try to convert comma-separated decimal values (European format) to float
-        #             df[col] = df[col].str.replace(',', '.').astype(float)
-        #         except:
-        #             # If conversion fails, keep as is
-        #             pass
+        df = pd.read_csv(input_path, sep=",")
+        logger.info(f"Dataframe1: {df}")
 
         df_filtered = df.iloc[:, 1:-1]
         y = df.iloc[:, -1]
@@ -178,7 +169,8 @@ class AudioFeatureExtractor:
         df = df.drop(columns=correlated_features)
         # df = df.drop(columns={"filename", "label"})
 
-        logger.info(f"Number of features (columns) in final dataset: {df.shape[1]}")
+        logger.info(f"Features: {df.columns.tolist()}")
+        logger.info(f"Features values: {df.values}")
 
         logger.info("Standardizing features...")
         scaler = StandardScaler()
@@ -189,10 +181,13 @@ class AudioFeatureExtractor:
         y_encoded = encoder.fit_transform(y)
 
         X_standardized_df = pd.DataFrame(X_standardized, columns=df.columns)
+        logger.info(f"Features: {X_standardized_df.columns.tolist()}")
+        logger.info(f"Features values: {X_standardized_df.values}")
 
-        df_final = pd.concat(
-            [X_standardized_df, pd.Series(y_encoded, name="Y")], axis=1
-        )
+        df_final = X_standardized_df
+        # df_final = pd.concat(
+        #     [X_standardized_df, pd.Series(y_encoded, name="Y")], axis=1
+        # )
 
         logger.info(
             f"Number of features (columns) in final dataset: {df_final.shape[1]}"

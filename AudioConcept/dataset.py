@@ -290,9 +290,9 @@ def calculate_features(
     except Exception as e:
         logger.error(f"Failed to save features to {features_path}: {e}")
 
-    result = extractor.scale_features(features_path, features_path)
+    # result = extractor.scale_features(features_path, features_path)
 
-    return result
+    return filtered_features_df
 
 
 def test_augmentation():

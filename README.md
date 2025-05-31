@@ -145,6 +145,10 @@ make data
 
 <h2 id="usage">🏋️‍♀️ Usage</h2>
 
+### Features
+
+You can chose the features to train SVM on in `SVM_FEATURES_FILTER` variable in `config.py`
+
 **We encourage to use our convenience *make* commands. For whole list run `make help`.**
 
 ### Train
