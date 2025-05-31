@@ -27,9 +27,11 @@ from AudioConcept.config import (
     DATA_PATH,
     GTZAN_GENRES,
     PROCESSED_DATA_DIR,
+    SVM_FEATURES_FILTER,
     SVM_RANDOM_STATE,
     SVM_TEST_SIZE,
 )
+from AudioConcept.features import AudioFeatureExtractor
 
 app = typer.Typer()
 
@@ -197,7 +199,14 @@ def get_dataloader(
 
 def gtzan_features_data(
     features_path: Path = PROCESSED_DATA_DIR / "processed_dataset.csv",
+    feature_filter: list[str] = SVM_FEATURES_FILTER,
 ):
+    """
+    Preparing features for SVM model.
+    Loads already processed dataset and filters it.
+    Change filter in config.py to select features.
+    """
+
     def _get_features(processed_data):
         """Load data from processed dataset."""
         df = pd.read_csv(processed_data)
@@ -205,12 +214,85 @@ def gtzan_features_data(
         y = df["Y"]
         return X, y
 
+    def _filter_features(X, feature_filter):
+        """Filter features based on the provided filter."""
+        if feature_filter:
+            filtered_cols = [col for col in X.columns if col in feature_filter]
+            X = X[filtered_cols]
+            logger.info(
+                f"Applied feature filter: {len(filtered_cols)} features selected"
+            )
+            # X = X[feature_filter]
+        return X
+
     X, y = _get_features(features_path)
+    X = _filter_features(X, feature_filter)
+    if X.empty or y.empty:
+        raise ValueError(
+            "Features or labels are empty. Check the processed dataset and feature filter."
+        )
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=SVM_TEST_SIZE, random_state=SVM_RANDOM_STATE
     )
+    logger.info(f"Features shape: {X.shape}")
+
     return X_train, X_test, y_train, y_test
+
+
+def calculate_features(
+    audio_data: np.ndarray,
+    sample_rate: int,
+    svm_scaler=None,
+    feature_filter: list[str] = SVM_FEATURES_FILTER,
+    features_path: Path = PROCESSED_DATA_DIR / "processed_audio.csv",
+):
+    def _filter_features(features_dict, feature_filter):
+        """Filter features based on the provided filter."""
+        if feature_filter:
+            return {k: v for k, v in features_dict.items() if k in feature_filter}
+        return features_dict
+
+    def _scale_features(features_array, scaler):
+        """Scale features using the provided scaler."""
+        if scaler is not None:
+            return scaler.transform(features_array)
+        logger.warning("No scaler provided, returning features without scaling.")
+        features_df = pd.DataFrame(features_array, columns=features_array.columns)
+        return features_df
+
+    def _validate_values(features_dict):
+        """Ensure all values in the features dictionary are scalar."""
+        for key, value in features_dict.items():
+            if not np.isscalar(value) and not isinstance(value, (int, float)):
+                raise ValueError(f"Feature '{key}' has non-scalar value: {value}")
+
+    extractor = AudioFeatureExtractor()
+    features_dict = extractor.extract_features(audio_data, sample_rate)
+    filtered_features_dict = _filter_features(features_dict, feature_filter)
+    _validate_values(filtered_features_dict)
+    filtered_values = list(filtered_features_dict.values())
+    logger.info(f"Features: {list(filtered_features_dict.keys())}")
+
+    features_array = np.array(filtered_values).reshape(1, -1)
+    features_df = pd.DataFrame(
+        features_array, columns=list(filtered_features_dict.keys())
+    )
+    filtered_features_df = _scale_features(features_df, svm_scaler)
+
+    try:
+        features_path.parent.mkdir(parents=True, exist_ok=True)
+
+        pd.DataFrame(filtered_features_dict, index=[0]).to_csv(
+            features_path, index=False
+        )
+        logger.info(f"Features saved to {features_path}")
+    except Exception as e:
+        logger.error(f"Failed to save features to {features_path}: {e}")
+
+    # result = extractor.scale_features(features_path, features_path)
+
+    return filtered_features_df
 
 
 def test_augmentation():

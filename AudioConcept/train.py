@@ -6,7 +6,7 @@ import pickle
 from loguru import logger
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 import torch
 from torch import nn
 from torch.utils.tensorboard import SummaryWriter
@@ -191,7 +191,9 @@ def train_model(
     patience = MODEL_PATIENCE
     patience_counter = 0
     train_losses, train_accuracies = [], []
+    train_f1_scores, train_precision_scores, train_recall_scores = [], [], []
     valid_losses, valid_accuracies = [], []
+    valid_f1_scores, valid_precision_scores, valid_recall_scores = [], [], []
     best_valid_loss = float("inf")
     best_valid_accuracy = float("-inf")
     best_model_state = None
@@ -256,8 +258,19 @@ def train_model(
 
         train_loss = np.mean(losses)
         train_accuracy = accuracy_score(y_true_train, y_pred_train)
+        train_f1 = f1_score(y_true_train, y_pred_train, average="macro")
+        train_precision = precision_score(
+            y_true_train, y_pred_train, average="macro", zero_division=0
+        )
+        train_recall = recall_score(
+            y_true_train, y_pred_train, average="macro", zero_division=0
+        )
+
         train_losses.append(train_loss)
         train_accuracies.append(train_accuracy)
+        train_f1_scores.append(train_f1)
+        train_precision_scores.append(train_precision)
+        train_recall_scores.append(train_recall)
 
         model.eval()
         y_true = []
@@ -284,21 +297,38 @@ def train_model(
                 valid_pbar.set_postfix({"loss": f"{loss.item():.4f}"})
 
         accuracy = accuracy_score(y_true, y_pred)
+        valid_f1 = f1_score(y_true, y_pred, average="macro")
+        valid_precision = precision_score(
+            y_true, y_pred, average="macro", zero_division=0
+        )
+        valid_recall = recall_score(y_true, y_pred, average="macro", zero_division=0)
+
         valid_loss = np.mean(losses)
         valid_losses.append(valid_loss)
         valid_accuracies.append(accuracy)
+        valid_f1_scores.append(valid_f1)
+        valid_precision_scores.append(valid_precision)
+        valid_recall_scores.append(valid_recall)
 
         scheduler.step(accuracy)  # Now using accuracy for scheduler instead of loss
 
         writer.add_scalar("Validation Loss", valid_loss, epoch)
         writer.add_scalar("Validation Accuracy", accuracy, epoch)
+        writer.add_scalar("Validation F1", valid_f1, epoch)
+        writer.add_scalar("Validation Precision", valid_precision, epoch)
+        writer.add_scalar("Validation Recall", valid_recall, epoch)
         writer.add_scalar("Training Accuracy", train_accuracy, epoch)
+        writer.add_scalar("Training F1", train_f1, epoch)
+        writer.add_scalar("Training Precision", train_precision, epoch)
+        writer.add_scalar("Training Recall", train_recall, epoch)
         writer.add_scalar("Learning Rate", optimizer.param_groups[0]["lr"], epoch)
 
         logger.info(
             f"Epoch: [{epoch + 1}/{num_epochs}], "
-            f"Train loss: {train_loss:.4f}, Train acc: {train_accuracy:.4f}, "
-            f"Valid loss: {valid_loss:.4f}, Valid acc: {accuracy:.4f}, "
+            f"Train loss: {train_loss:.4f}, Train acc: {train_accuracy:.4f}, Train F1: {train_f1:.4f}, "
+            f"Train Precision: {train_precision:.4f}, Train Recall: {train_recall:.4f}, "
+            f"Valid loss: {valid_loss:.4f}, Valid acc: {accuracy:.4f}, Valid F1: {valid_f1:.4f}, "
+            f"Valid Precision: {valid_precision:.4f}, Valid Recall: {valid_recall:.4f}, "
             f"LR: {optimizer.param_groups[0]['lr']:.6f}"
         )
 
@@ -354,7 +384,18 @@ def train_model(
             final_y_pred.extend(pred.cpu().tolist())
 
     final_accuracy = accuracy_score(final_y_true, final_y_pred)
+    final_f1 = f1_score(final_y_true, final_y_pred, average="macro")
+    final_precision = precision_score(
+        final_y_true, final_y_pred, average="macro", zero_division=0
+    )
+    final_recall = recall_score(
+        final_y_true, final_y_pred, average="macro", zero_division=0
+    )
+
     logger.info(f"Final validation accuracy with best model: {final_accuracy:.4f}")
+    logger.info(f"Final validation F1 score with best model: {final_f1:.4f}")
+    logger.info(f"Final validation precision with best model: {final_precision:.4f}")
+    logger.info(f"Final validation recall with best model: {final_recall:.4f}")
 
     # plotting and saving results
     figures_path.mkdir(parents=True, exist_ok=True)
@@ -364,10 +405,19 @@ def train_model(
         "timestamp": timestamp,
         "train_losses": train_losses,
         "train_accuracies": train_accuracies,
+        "train_f1_scores": train_f1_scores,
+        "train_precision_scores": train_precision_scores,
+        "train_recall_scores": train_recall_scores,
         "valid_losses": valid_losses,
         "valid_accuracies": valid_accuracies,
+        "valid_f1_scores": valid_f1_scores,
+        "valid_precision_scores": valid_precision_scores,
+        "valid_recall_scores": valid_recall_scores,
         "epochs": list(range(1, len(train_losses) + 1)),
         "final_accuracy": final_accuracy,
+        "final_f1": final_f1,
+        "final_precision": final_precision,
+        "final_recall": final_recall,
         "best_valid_accuracy": best_valid_accuracy,
         "best_valid_loss": best_valid_loss,
         "effective_learning_rate": effective_lr,
@@ -380,9 +430,9 @@ def train_model(
         f"Saved run stats to {figures_path}/{model_to_train}_run_stats_{timestamp}.json"
     )
 
-    plt.figure(figsize=(15, 6))
+    plt.figure(figsize=(20, 12))
 
-    plt.subplot(1, 2, 1)
+    plt.subplot(2, 2, 1)
     epochs_range = range(1, len(train_losses) + 1)
     plt.plot(epochs_range, train_losses, label="Training Loss", alpha=0.8)
     plt.plot(epochs_range, valid_losses, label="Validation Loss", alpha=0.8)
@@ -402,7 +452,7 @@ def train_model(
     plt.legend()
     plt.grid(True, alpha=0.3)
 
-    plt.subplot(1, 2, 2)
+    plt.subplot(2, 2, 2)
     plt.plot(epochs_range, train_accuracies, label="Training Accuracy", alpha=0.8)
     plt.plot(epochs_range, valid_accuracies, label="Validation Accuracy", alpha=0.8)
 
@@ -418,6 +468,62 @@ def train_model(
     plt.ylabel("Accuracy")
     plt.title(
         f"{model_to_train} Accuracy (Best: {best_valid_accuracy:.3f}, Final: {final_accuracy:.3f})"
+    )
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+
+    plt.subplot(2, 2, 3)
+    plt.plot(epochs_range, train_f1_scores, label="Training F1", alpha=0.8)
+    plt.plot(epochs_range, valid_f1_scores, label="Validation F1", alpha=0.8)
+
+    plt.axvline(
+        x=best_epoch,
+        color="red",
+        linestyle="--",
+        alpha=0.7,
+        label=f"Best Epoch ({best_epoch})",
+    )
+
+    plt.xlabel("Epochs")
+    plt.ylabel("F1 Score")
+    plt.title(f"{model_to_train} F1 Score (Final: {final_f1:.3f})")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+
+    plt.subplot(2, 2, 4)
+    plt.plot(
+        epochs_range, train_precision_scores, label="Training Precision", alpha=0.8
+    )
+    plt.plot(
+        epochs_range, valid_precision_scores, label="Validation Precision", alpha=0.8
+    )
+    plt.plot(
+        epochs_range,
+        train_recall_scores,
+        label="Training Recall",
+        alpha=0.8,
+        linestyle="--",
+    )
+    plt.plot(
+        epochs_range,
+        valid_recall_scores,
+        label="Validation Recall",
+        alpha=0.8,
+        linestyle="--",
+    )
+
+    plt.axvline(
+        x=best_epoch,
+        color="red",
+        linestyle="--",
+        alpha=0.7,
+        label=f"Best Epoch ({best_epoch})",
+    )
+
+    plt.xlabel("Epochs")
+    plt.ylabel("Score")
+    plt.title(
+        f"{model_to_train} Precision & Recall (Final P: {final_precision:.3f}, R: {final_recall:.3f})"
     )
     plt.legend()
     plt.grid(True, alpha=0.3)

@@ -17,6 +17,7 @@ from AudioConcept.config import (
     SAMPLE_AUDIO_DIR,
     VALIDATION_PARAMS,
 )
+from AudioConcept.dataset import calculate_features
 
 app = typer.Typer()
 
@@ -42,8 +43,10 @@ def main(
         return
 
     try:
-        model = load_model(prediction_model, model_path)
-        probabilities = predict_genre(model, audio_file_path, prediction_model)
+        svm_scaler, model = load_model(prediction_model, model_path)
+        probabilities = predict_genre(
+            model, svm_scaler, audio_file_path, prediction_model
+        )
 
         logger.info("Genre prediction probabilities:")
         for i, genre in enumerate(GTZAN_GENRES):
@@ -166,100 +169,41 @@ def load_model(model_name: str, model_path: Path):
         if isinstance(loaded_data, dict):
             if "model" in loaded_data:
                 model = loaded_data["model"]
-            elif "best_model" in loaded_data:
-                model = loaded_data["best_model"]
-            elif "svm_model" in loaded_data:
-                model = loaded_data["svm_model"]
             else:
-                for key, value in loaded_data.items():
-                    if hasattr(value, "predict") or hasattr(value, "decision_function"):
-                        model = value
-                        logger.info(f"Found model in key: {key}")
-                        break
-                else:
-                    raise ValueError(
-                        f"Could not find SVM model in dictionary. Keys: {list(loaded_data.keys())}"
-                    )
+                raise ValueError(
+                    f"Could not find SVM model in dictionary. Keys: {list(loaded_data.keys())}"
+                )
+            if "scaler" in loaded_data:
+                svm_scaler = loaded_data["scaler"]
+                logger.success("SVM scaler loaded successfully")
+            else:
+                raise ValueError(
+                    f"Could not find SVM scaler in dictionary. Keys: {list(loaded_data.keys())}"
+                )
         else:
+            svm_scaler = None
             model = loaded_data
+            logger.warning("Loaded data is not a dictionary.")
     else:
+        svm_scaler = None
         model = loaded_data
 
     logger.success(f"Model {model_name} loaded successfully")
-    return model
+    return svm_scaler, model
 
 
-def extract_features_for_svm(audio_file_path: Path) -> np.ndarray:
-    """Extract features for SVM model matching the training feature set (55 features)."""
+def extract_features_for_svm(scaler, audio_file_path: Path) -> np.ndarray:
+    """Extract features for SVM model."""
     audio_data, sample_rate = librosa.load(
         str(audio_file_path), sr=VALIDATION_PARAMS["target_sample_rate"]
     )
-
-    features = []
-
-    length = len(audio_data) / sample_rate
-    features.append(float(length))
-
-    chroma_stft = librosa.feature.chroma_stft(y=audio_data, sr=sample_rate)
-    features.append(float(np.mean(chroma_stft)))
-    features.append(float(np.var(chroma_stft)))
-
-    rms = librosa.feature.rms(y=audio_data)
-    features.append(float(np.mean(rms)))
-    features.append(float(np.var(rms)))
-
-    spectral_centroids = librosa.feature.spectral_centroid(y=audio_data, sr=sample_rate)
-    features.append(float(np.var(spectral_centroids)))
-
-    spectral_bandwidth = librosa.feature.spectral_bandwidth(
-        y=audio_data, sr=sample_rate
-    )
-    features.append(float(np.var(spectral_bandwidth)))
-
-    rolloff = librosa.feature.spectral_rolloff(y=audio_data, sr=sample_rate)
-    features.append(float(np.mean(rolloff)))
-    features.append(float(np.var(rolloff)))
-
-    zcr = librosa.feature.zero_crossing_rate(audio_data)
-    features.append(float(np.mean(zcr)))
-    features.append(float(np.var(zcr)))
-
-    harmony = librosa.effects.harmonic(audio_data)
-    features.append(float(np.mean(harmony)))
-    features.append(float(np.var(harmony)))
-
-    tonnetz = librosa.feature.tonnetz(y=audio_data, sr=sample_rate)
-    features.append(float(np.mean(tonnetz)))
-    features.append(float(np.var(tonnetz)))
-
-    tempo, _ = librosa.beat.beat_track(y=audio_data, sr=sample_rate)
-    features.append(float(tempo))
-
-    mfccs = librosa.feature.mfcc(y=audio_data, sr=sample_rate, n_mfcc=20)
-
-    features.append(float(np.mean(mfccs[0])))
-    features.append(float(np.var(mfccs[0])))
-    features.append(float(np.var(mfccs[1])))
-
-    # mfcc
-    for i in range(2, 20):
-        features.append(float(np.mean(mfccs[i])))
-        features.append(float(np.var(mfccs[i])))
-
-    features_array = np.array(features, dtype=np.float64)
-    logger.info(f"Extracted {len(features_array)} features for SVM model")
-
-    if len(features_array) != 55:
-        logger.warning(f"Expected 55 features, got {len(features_array)}")
-        logger.warning(f"Feature array shape: {features_array.shape}")
-        logger.warning(f"Feature types: {[type(f) for f in features[:5]]}")
-
-    return features_array.reshape(1, -1)
+    features = calculate_features(audio_data, sample_rate, scaler)
+    return features
 
 
 def preprocess_audio_for_neural_models(audio_file_path: Path) -> np.ndarray:
     """Preprocess audio for neural network models."""
-    audio_data, sample_rate = librosa.load(
+    audio_data, _ = librosa.load(
         str(audio_file_path), sr=VALIDATION_PARAMS["target_sample_rate"]
     )
 
@@ -274,19 +218,18 @@ def preprocess_audio_for_neural_models(audio_file_path: Path) -> np.ndarray:
     return audio_data
 
 
-def predict_genre(model, audio_file_path: Path, model_name: str) -> np.ndarray:
+def predict_genre(
+    model, svm_scaler, audio_file_path: Path, model_name: str
+) -> np.ndarray:
     """Predict genre probabilities for the given audio file."""
     logger.info(f"Predicting genre using {model_name} model...")
 
     if model_name == "SVM":
-        features = extract_features_for_svm(audio_file_path)
+        features = extract_features_for_svm(svm_scaler, audio_file_path)
 
-        if hasattr(model, "predict_proba"):
-            probabilities = model.predict_proba(features)[0]
-        else:
-            decision_scores = model.decision_function(features)[0]
-            exp_scores = np.exp(decision_scores - np.max(decision_scores))
-            probabilities = exp_scores / np.sum(exp_scores)
+        decision_scores = model.decision_function(features)[0]
+        exp_scores = np.exp(decision_scores - np.max(decision_scores))
+        probabilities = exp_scores / np.sum(exp_scores)
 
     elif model_name in ["VGGish", "CNN"]:
         audio_data = preprocess_audio_for_neural_models(audio_file_path)
