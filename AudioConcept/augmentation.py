@@ -1,9 +1,16 @@
-import numpy as np
-import librosa
-import librosa.effects
 import random
 from typing import List
+
+import librosa
+import librosa.effects
+import numpy as np
 import scipy.signal
+
+"""
+Due to dependency issues with torchaudio and librosa, we implement audio transformations.
+
+Due to memory constraints, we use numpy arrays instead of torch tensors.
+"""
 
 
 class AudioTransform:
