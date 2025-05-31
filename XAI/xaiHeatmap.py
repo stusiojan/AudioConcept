@@ -1,7 +1,7 @@
 import shap
 import pandas as pd
 from pathlib import Path
-from AudioConcept.modeling.svm_classifier import SVMClassifier 
+from AudioConcept.modeling.classifier_svm import SVMClassifier 
 from AudioConcept.config import MODELS_DIR, PROCESSED_DATA_DIR
 
 class xaiHeatmap:

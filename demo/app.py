@@ -1,62 +1,42 @@
+# import streamlit as st
+# from components.audio_selector import select_audio_file
+# from features.predictor import predict_genre_streamlit
+
+# st.title("Music Genre Classifier with XAI")
+
+# file_path = select_audio_file()
+# model_choice = st.selectbox("Choose prediction model:", ["SVM", "CNN", "VGGish"])
+
+# if file_path:
+#     st.audio(file_path)
+
+#     if st.button("Predict"):
+#         st.write("Prediction...")
+#         predict_genre_streamlit(file_path, model_choice)
+
+#     # if st.button("Waterfall plot"):
+#     #     st.write("📊 Generowanie wykresu waterfall...")
+#     #     fig = generate_waterfall_plot()
+#     #     st.pyplot(fig)
+
+# main app file (e.g., app.py or streamlit_app.py)
+
+from components.config import configure_page
+from components.audio_selector import select_audio_file
+from features.predictor import predict_genre_streamlit
 import streamlit as st
-import os
-from XAI.featureExtractor import FeatureExtractor
-from XAI.xaiWaterfall import xaiWaterfall
-from AudioConcept.modeling.svm_classifier import SVMClassifier
-from AudioConcept.config import PROCESSED_DATA_DIR, MODELS_DIR
 
-# Ścieżka główna do folderu audio
-AUDIO_DIR = "audio/genres_original"
+configure_page()
 
-# Listuj gatunki (foldery)
-genres = [d for d in os.listdir(AUDIO_DIR) if os.path.isdir(os.path.join(AUDIO_DIR, d))]
+st.title("Music Genre Classifier with XAI")
 
-# Selectbox do wyboru gatunku
-selected_genre = st.selectbox("Choose music genre:", genres)
+model_choice = st.selectbox("Choose prediction model:", ["SVM", "CNN", "VGGish"])
 
-# Ścieżka do wybranego folderu
-genre_path = os.path.join(AUDIO_DIR, selected_genre)
+file_path = select_audio_file()
 
-# Listuj pliki audio w wybranym gatunku
-audio_files = [f for f in os.listdir(genre_path) if f.endswith(".wav")]
+if file_path:
+    st.audio(file_path)
 
-# Selectbox do wyboru pliku audio
-selected_file = st.selectbox("Choose sample:", audio_files)
-
-# Ścieżka do wybranego pliku
-file_path = os.path.join(genre_path, selected_file)
-
-# Odtwarzanie audio
-st.audio(file_path)
-
-# Przycisk do wykonania predykcji
-if st.button("Predict"):
-    st.write("🔍 Przeprowadzanie ekstrakcji cech i predykcji...")
-
-    # Ekstrakcja cech
-    extractor = FeatureExtractor()
-    df = extractor.extract_features(file_path)
-
-    # Usuń mfcc2_mean jeśli istnieje
-    if 'mfcc2_mean' in df.columns:
-        df = df.drop(columns=['mfcc2_mean'])
-
-    # Ładowanie modelu i predykcja
-    model_path = MODELS_DIR / "svm_genre_classifier.pkl"
-    classifier = SVMClassifier()
-    classifier.load_model(model_path)
-    prediction = classifier.predict(df.values)
-
-    # Wyświetlenie wyniku
-    st.success(f"🎵 Przewidywany gatunek muzyczny: **{prediction[0]}**")
-
-# Waterfall plot
-if st.button("Waterfall plot"):
-    st.write("Generowanie wykresu waterfall...")
-    xai = xaiWaterfall()
-    xai.load_data()
-    xai.load_model()
-    xai.scale_data()
-    xai.compute_shap_values()
-    st.pyplot(xai.plot_waterfall())
-
+    if st.button("Predict"):
+        st.write("Prediction...")
+        predict_genre_streamlit(file_path, model_choice)
