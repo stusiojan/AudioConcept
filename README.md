@@ -63,6 +63,8 @@ Locating Musical Concepts in a Genre Classifier.
     │
     ├── predict.py              <- Code to run model inference with trained models 
     │
+    ├── features.py             <- Code to extract features
+    │
     ├── train.py                <- Code to train models
     │
     ├── evaluate.py             <- Code to evaluate models
