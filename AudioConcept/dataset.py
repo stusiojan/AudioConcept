@@ -217,7 +217,12 @@ def gtzan_features_data(
     def _filter_features(X, feature_filter):
         """Filter features based on the provided filter."""
         if feature_filter:
-            X = X[feature_filter]
+            filtered_cols = [col for col in X.columns if col in feature_filter]
+            X = X[filtered_cols]
+            logger.info(
+                f"Applied feature filter: {len(filtered_cols)} features selected"
+            )
+            # X = X[feature_filter]
         return X
 
     X, y = _get_features(features_path)
@@ -285,7 +290,9 @@ def calculate_features(
     except Exception as e:
         logger.error(f"Failed to save features to {features_path}: {e}")
 
-    return filtered_features_df
+    result = extractor.scale_features(features_path, features_path)
+
+    return result
 
 
 def test_augmentation():
