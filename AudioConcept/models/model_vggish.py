@@ -34,8 +34,6 @@ class VGGish(nn.Module):
     - batch normalization instead of LRN
     - 144M weights, 20B multiplies -> 62M weights, 2.4B multiplies
     - do not modify strides
-
-    Optimized for macOS with ARM processors - Metal Performance Shaders
     """
 
     def __init__(

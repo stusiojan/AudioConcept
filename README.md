@@ -149,6 +149,10 @@ make data
 
 You can chose the features to train SVM on in `SVM_FEATURES_FILTER` variable in `config.py`
 
+### Models
+
+You can download already trained models from [here](https://wutwaw-my.sharepoint.com/my?id=%2Fpersonal%2F01152433%5Fpw%5Fedu%5Fpl%2FDocuments%2FAudioConcept) and put it into `models` directory. *PROVIDED MODELS ARE TRAINED ON MPS, SO THEY WILL WORK ONLY ON MACOS SYSTEMS WITH ARM*
+
 **We encourage to use our convenience *make* commands. For whole list run `make help`.**
 
 ### Train
@@ -195,5 +199,5 @@ VGGish implementation is based on VGGish architecture for genre classification [
 | Constructing adversarial examples to investigate the plausibility of explanations in deep audio and image classifiers  | Researchers tests how plausible the explainers are by feeding them deliberately  perturbed input data. In audio domain LIME was tested and it does not handle it well. "...the explanation method LIME is not able to recover perturbed segments in a satisfactory manner, with even the baseline performing better". The tested audio was recorded voice.  | [link](https://link.springer.com/article/10.1007/s00521-022-07918-7#notes) |
 | “audioLIME: Listenable Explanations Using Source Separation” | audioLIME wykorzystuje separację źródeł dźwięku, aby wyjaśnienia były słuchalne. Można stosować do modeli klasyfikujących muzykę aby zrozumieć, które komponenty dźwięku miały kluczowy wpływ na predykcję modelu.| [link](https://arxiv.org/pdf/2008.00582v3.pdf) |
 | “Tracing Back Music Emotion Predictions to Sound Sources and Intuitive Perceptual Qualities” | Artykuł rozszerza audioLIME, dodając średniopoziomowe cechy percepcyjne (np. barwę, rytm, dynamikę), aby lepiej zrozumieć, jak model interpretuje emocje w muzyce. Pomaga wykryć bias w modelach klasyfikujących emocje w muzyce i sprawia, że wyjaśnienia są bliższe temu, jak ludzie rozumieją muzykę. | [link](https://arxiv.org/pdf/2106.07787v2.pdf) |
-| CNN ARCHITECTURES FOR LARGE-SCALE AUDIO CLASSIFICATION | VGG-ish / Short-chunk CNNs | [link](https://arxiv.org/pdf/1703.09179) |
+| CNN ARCHITECTURES FOR LARGE-SCALE AUDIO CLASSIFICATION | VGG-ish / Short-chunk CNNs | [link](https://arxiv.org/pdf/1609.09430) |
 | MUSIC GENRE CLASSIFIER WITH DEEP NEURAL NETWORKS | CNNs with over 0.8 accuracy trained on enhanced GTZAN | [link](https://github.com/XiplusChenyu/Musical-Genre-Classification/blob/master/music_genre_classification.pdf) |
