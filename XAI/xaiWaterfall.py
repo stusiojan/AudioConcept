@@ -16,7 +16,7 @@ class xaiWaterfall:
     
     def __init__(self, 
                  features_path: Path = PROCESSED_DATA_DIR / "processed_dataset.csv",
-                 model_path: Path = MODELS_DIR / "svm_genre_classifier.pkl",
+                 model_path: Path = MODELS_DIR / "best_SVM_model.pkl",
                  predictions_path: Path = PROCESSED_DATA_DIR / "test_predictions.csv",
                  sample_size: int = 100,
                  shap_sample_size: int = 20,
@@ -53,7 +53,6 @@ class xaiWaterfall:
     def compute_shap_values(self):
         if self.X_test_scaled is None:
             raise ValueError("Dane nie zostały przeskalowane. Uruchom metodę scale_data().")
-        # Losowa próbka do inicjalizacji explainer'a
         X20 = shap.utils.sample(self.X_test_scaled, self.shap_sample_size)
         self.explainer = shap.Explainer(self.classifier.model.predict, X20)
         self.shap_values = self.explainer(self.X_test_df)

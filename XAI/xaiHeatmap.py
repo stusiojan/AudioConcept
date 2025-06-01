@@ -13,7 +13,7 @@ class xaiHeatmap:
 
     def __init__(self, 
                  features_path: Path = PROCESSED_DATA_DIR / "processed_dataset.csv",
-                 model_path: Path = MODELS_DIR / "svm_genre_classifier.pkl",
+                 model_path: Path = MODELS_DIR / "best_SVM_model.pkl",
                  sample_size: int = 100,
                  shap_sample_size: int = 20):
         self.features_path = features_path
