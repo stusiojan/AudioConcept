@@ -59,8 +59,6 @@ class SVMClassifier:
         self.best_params_ = None
         self.use_wandb = use_wandb
         self.genres = GTZAN_GENRES
-
-        # Parameters for grid search
         self.param_grid = SVM_PARAM_GRID
 
         if self.use_wandb:
@@ -83,8 +81,9 @@ class SVMClassifier:
         """
         try:
 
+            logger.info(f"Prescaled: {X.shape}, {X}")
             X_scaled = self.scaler.fit_transform(X)
-
+            logger.info(f"Scaled: {X_scaled.shape}, {X_scaled}")
             svm = SVC(random_state=random_state)
 
             grid_search = GridSearchCV(
@@ -93,7 +92,7 @@ class SVMClassifier:
                 cv=cv,
                 scoring="accuracy",
                 n_jobs=-1,
-                verbose=1,  # Add progress reporting
+                verbose=1,
             )
             grid_search.fit(X_scaled, y)
 
@@ -150,7 +149,10 @@ class SVMClassifier:
         if self.model is None:
             raise ValueError("Model not trained yet!")
 
+        logger.info(f"Data: {X}")
         y_pred = self.predict(X)
+        logger.info(f"Predictions: {y_pred}")
+        logger.info(f"True labels: {y}")
 
         accuracy = accuracy_score(y, y_pred)
         report = classification_report(
@@ -176,7 +178,6 @@ class SVMClassifier:
                         for genre in self.genres
                     ],
                 )
-                # wandb.log({"test_accuracy": accuracy, "classification_report": report})
                 wandb.log({"classification_report_table": table})
                 wandb.log({"confusion_matrix": wandb.Image(conf_matrix)})
                 logger.info("Accuracy logged")
