@@ -68,11 +68,6 @@ LEARNING RATE = 6e-5
 ![](../reports/figures/VGGish_training_plots_20250531_2118.png)
 
 
-
-than the best batch 
-
-than something else
-
 ### weight decay experiments
 
 WEIGHT DECAY 8e-6
@@ -80,7 +75,7 @@ WEIGHT DECAY 8e-6
 WEIGHT DECAY **5e-5** (the highest accuracy)
 ![](../reports/figures/VGGish_training_plots_20250601_0246.png)
 WEIGHT DECAY 1e-4
-![](../reports/figures/VGGish_training_plots_20250531_0342.png)
+![](../reports/figures/VGGish_training_plots_20250601_0342.png)
 WEIGHT DECAY  8e-4
 ![](../reports/figures/VGGish_training_plots_20250601_0433.png)
 WEIGHT DECAY  1e-3
@@ -91,7 +86,6 @@ WEIGHT DECAY  1e-2
 
 Experiments for the shorter batch:
 
-*different schedulers for longer lerning sessions*
 WEIGHT DECAY = 1e-4
 ![](../reports/figures/VGGish_training_plots_20250528_1833.png)
 WEIGHT DECAY  = 1e-3
@@ -107,9 +101,9 @@ WEIGHT DECAY  = 5e-3
 
 Results of training on the same data with the same parameters but different architectures (ours VGGish implementation and with added 3087 units final layer with sigmoid)
 
-without sigmoid
+1. without sigmoid
 ![](../reports/figures/VGGish_training_plots_20250601_1918.png)
-with sigmoid
+2. with sigmoid
 ![](../reports/figures/VGGish_training_plots_20250601_1855.png)
 
 ## CNN
