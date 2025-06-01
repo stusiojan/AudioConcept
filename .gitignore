@@ -200,7 +200,7 @@ data/raw/gtzan
 /models/
 
 # Figures
-/reports/
+# /reports/
 
 # VSCode
 .vscode/
