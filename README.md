@@ -185,6 +185,11 @@ In order to see classification results for SVM you must be a member of AudioConc
 
 Plots will be placed in `reports/figures` directory.
 
+### Run demo with UI
+```bash
+cd demo
+streamlit run app.py
+```
 <h2 id="sources">ℹ️ Sources</h2>
 
 CNN implementation is based on [mamodrzejewski GTZAN genre classification example](https://github.com/mamodrzejewski/wimu-gtzan-genre-example), which is based on [Music Classification: Beyond Supervised Learning, Towards Real-world Applications](https://music-classification.github.io/tutorial/part3_supervised/tutorial.html) by Minz Won, Janne Spijkervet and Keunwoo Choi.
