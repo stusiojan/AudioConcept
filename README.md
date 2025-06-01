@@ -186,6 +186,8 @@ In order to see classification results for SVM you must be a member of AudioConc
 Plots will be placed in `reports/figures` directory.
 
 ### Run demo with UI
+
+Use `make run_app` or
 ```bash
 cd demo
 streamlit run app.py

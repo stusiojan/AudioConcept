@@ -17,6 +17,7 @@ from AudioConcept.config import (
 
 class StreamlitLogHandler:
     """Redirects loguru logs to Streamlit with filtering for technical messages."""
+
     def __init__(self):
         self.buffer = StringIO()
         self.ignored_phrases = [
@@ -26,7 +27,9 @@ class StreamlitLogHandler:
         ]
 
     def write(self, message):
-        if message.strip() and not any(phrase in message for phrase in self.ignored_phrases):
+        if message.strip() and not any(
+            phrase in message for phrase in self.ignored_phrases
+        ):
             st.text(message.strip())
 
     def flush(self):
@@ -38,6 +41,7 @@ def predict_genre_streamlit(file_path: str, model_choice: str):
 
     # Redirect loguru logs to Streamlit
     from loguru import logger
+
     logger.remove()
     logger.add(StreamlitLogHandler(), level="INFO", format="{message}")
 
@@ -48,8 +52,8 @@ def predict_genre_streamlit(file_path: str, model_choice: str):
         return None
 
     try:
-        model = load_model(model_choice, MODELS_DIR)
-        probabilities = raw_predict(model, audio_file_path, model_choice)
+        svm_scaler, model = load_model(model_choice, MODELS_DIR)
+        probabilities = raw_predict(model, svm_scaler, audio_file_path, model_choice)
 
         st.markdown("### 📈 Genre prediction probabilities:")
         for genre, prob in zip(GTZAN_GENRES, probabilities):

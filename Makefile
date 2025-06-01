@@ -117,6 +117,11 @@ predict_svm:
 	$(PYTHON_INTERPRETER) -m AudioConcept.predict SVM
 
 
+## Run frontend app
+.PHONY: run_app
+run_app:
+	streamlit run demo/app.py
+
 #################################################################################
 # Self Documenting Commands                                                     #
 #################################################################################
