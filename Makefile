@@ -37,17 +37,18 @@ format:
 	ruff check --fix
 	ruff format
 
-## Set up Python interpreter environment
-.PHONY: create_environment
-create_environment:
-	@bash -c "if [ ! -z `which virtualenvwrapper.sh` ]; then source `which virtualenvwrapper.sh`; mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); else mkvirtualenv.bat $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); fi"
-	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
+# ## Set up Python interpreter environment
+# .PHONY: create_environment
+# create_environment:
+# 	@bash -c "if [ ! -z `which virtualenvwrapper.sh` ]; then source `which virtualenvwrapper.sh`; mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); else mkvirtualenv.bat $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER); fi"
+# 	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
 	
 ## Set up Python interpreter environment with conda
-.PHONY: create_conda_environment
-create_conda_environment:
-	@bash -c "if [ ! -z `which conda` ]; then conda create --name $(PROJECT_NAME) python=$(PYTHON_VERSION); else echo 'Conda is not installed.'; fi"
-	@echo ">>> New conda environment created. Activate with:\nconda activate $(PROJECT_NAME)"
+.PHONY: create_conda_env
+create_conda_env:
+	conda -V
+	conda env create -f environment.yml
+	conda activate wimu
 
 
 #################################################################################
