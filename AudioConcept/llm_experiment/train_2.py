@@ -24,7 +24,12 @@ LLM generated training script for GTZAN dataset classification.
 
 
 class MelSpectrogramCNN(nn.Module):
-    """CNN Architecture optimized for mel-spectrogram classification"""
+    """
+    The task of training CNN on GTZAN dataset is to classify audio genres
+    is a common theme in audio processing, so we tried to fully generate
+    training pipeline with LLM. This resulted with llm_experiment/train_2.py
+    and llm_experiment/dataset_2.py scripts.
+    """
 
     def __init__(self, num_classes=10, dropout_rate=0.3):
         super(MelSpectrogramCNN, self).__init__()
