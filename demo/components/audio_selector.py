@@ -1,10 +1,15 @@
 import os
 import streamlit as st
+from pathlib import Path
 
-AUDIO_DIR = "audio/genres_original"
+# Use absolute path to the audio directory
+AUDIO_DIR = os.path.join(Path(__file__).parent.parent, "audio", "genres_original")
+
 
 def select_audio_file():
-    genres = [d for d in os.listdir(AUDIO_DIR) if os.path.isdir(os.path.join(AUDIO_DIR, d))]
+    genres = [
+        d for d in os.listdir(AUDIO_DIR) if os.path.isdir(os.path.join(AUDIO_DIR, d))
+    ]
     selected_genre = st.selectbox("Choose music genre:", genres)
 
     genre_path = os.path.join(AUDIO_DIR, selected_genre)

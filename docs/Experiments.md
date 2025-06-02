@@ -153,27 +153,48 @@ RandomApply([TimeStretch(n_samples=self.num_samples)], p=0.2)
 
 ### Learning rate experiments
 
-python -m AudioConcept.train experiment CNN --audio-length CNN --lr 8e-2 --weight-decay 5e-4
+This was the base configuration for this experimensts:
+```
+NUM_EPOCHS = 60
+MODEL_PATIENCE = 15
+WEIGHT_DECAY = 5e-4
+LABEL_SMOOTHING = 0.15
+NOISE_LEVEL = 0.002
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+    optimizer,
+    mode="max",
+    factor=0.75,
+    patience=8,
+    min_lr=effective_lr / 50,
+    verbose=True,
+)
+AUDIO_LENGTH=29.1
+```
+the data augemntation and model architecture were the same.
+
+LEARNING RATE = 8e-2
 ![](../reports/figures/CNN_training_plots_20250601_0659.png)
 
-python -m AudioConcept.train experiment CNN --audio-length CNN --lr 1e-3 --weight-decay 5e-4
+LEARNING RATE = 1e-3
 ![](../reports/figures/CNN_training_plots_20250601_0736.png)
 
-python -m AudioConcept.train experiment CNN --audio-length CNN --lr 5e-3 --weight-decay 5e-4
+LEARNING RATE = **5e-3** (the highest accuracy)
 ![](../reports/figures/CNN_training_plots_20250601_0857.png)
 
-python -m AudioConcept.train experiment CNN --audio-length CNN --lr 7e-3 --weight-decay 5e-4
+LEARNING RATE = 7e-3
 ![](../reports/figures/CNN_training_plots_20250601_1019.png)
 
-python -m AudioConcept.train experiment CNN --audio-length CNN --lr 9e-3 --weight-decay 5e-4
+LEARNING RATE = 9e-3
 ![](../reports/figures/CNN_training_plots_20250601_1136.png)
 
-python -m AudioConcept.train experiment CNN --audio-length CNN --lr 5e-4 --weight-decay 5e-4
+LEARNING RATE = 5e-4
 ![](../reports/figures/CNN_training_plots_20250601_1254.png)
 
-python -m AudioConcept.train experiment CNN --audio-length CNN --lr 9e-4 --weight-decay 5e-4
+LEARNING RATE = 9e-4
 ![](../reports/figures/CNN_training_plots_20250601_1415.png)
 
+With the biggest learning rate from tested ones the model doesn't learn.
+With the lowest learning rates the model is overfitting. This learning rates could be better if we use more agressive regaluration and enlargen the dataset.
 
 ## SVM
 

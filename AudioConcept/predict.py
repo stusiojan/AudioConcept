@@ -13,6 +13,7 @@ from AudioConcept.config import (
     GTZAN_GENRES,
     MODEL_TO_TRAIN,
     MODELS_DIR,
+    PROCESSED_DATA_DIR,
     REPORTS_DIR,
     SAMPLE_AUDIO_DIR,
     VALIDATION_PARAMS,
@@ -155,6 +156,23 @@ def validate_input_audio(audio_file_path: Path) -> bool:
 
 def load_model(model_name: str, model_path: Path):
     """Load trained model from pickle file."""
+
+    def _load_scaler():
+        try:
+            logger.info("Loading scaler...")
+            with open(PROCESSED_DATA_DIR / "scaler.pkl", "rb") as f:
+                scaler = pickle.load(f)
+                logger.info(
+                    f" Scaler type: {type(scaler)}, values: {scaler.mean_}, {scaler.scale_}"
+                )
+            logger.success("Scaler loaded successfully")
+        except FileNotFoundError:
+            logger.error(
+                "Scaler file not found. Please ensure the scaler.pkl file exists in the processed data directory."
+            )
+            raise
+        return scaler
+
     model_file = model_path / f"best_{model_name}_model.pkl"
 
     if not model_file.exists():
@@ -173,17 +191,18 @@ def load_model(model_name: str, model_path: Path):
                 raise ValueError(
                     f"Could not find SVM model in dictionary. Keys: {list(loaded_data.keys())}"
                 )
-            if "scaler" in loaded_data:
-                svm_scaler = loaded_data["scaler"]
-                logger.success("SVM scaler loaded successfully")
-            else:
-                raise ValueError(
-                    f"Could not find SVM scaler in dictionary. Keys: {list(loaded_data.keys())}"
-                )
+            # if "scaler" in loaded_data:
+            #     svm_scaler = loaded_data["scaler"]
+            #     logger.success("SVM scaler loaded successfully")
+            # else:
+            #     raise ValueError(
+            #         f"Could not find SVM scaler in dictionary. Keys: {list(loaded_data.keys())}"
+            #     )
         else:
-            svm_scaler = None
+            # svm_scaler = None
             model = loaded_data
             logger.warning("Loaded data is not a dictionary.")
+        svm_scaler = _load_scaler()
     else:
         svm_scaler = None
         model = loaded_data

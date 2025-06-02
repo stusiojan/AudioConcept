@@ -1,3 +1,12 @@
+import sys
+import os
+from pathlib import Path
+
+# Add parent directory to Python path
+parent_dir = str(Path(__file__).parent.parent)
+if parent_dir not in sys.path:
+    sys.path.insert(0, parent_dir)
+
 from components.config import configure_page
 from components.audio_selector import select_audio_file
 from features.predictor import predict_genre_streamlit

@@ -53,7 +53,11 @@ Locating Musical Concepts in a Genre Classifier.
 │
 ├── scripts            <- Various automation scripts.
 │
-└── AudioConcept   <- Source code for use in this project.
+├── demo               <- Code to host a fronted to XAI.
+│
+├── XAI                <- Code to explain models decicions.
+│
+└── AudioConcept       <- Source code for use in this project.
     │
     ├── __init__.py             <- Makes AudioConcept a Python module
     │
@@ -80,7 +84,7 @@ Locating Musical Concepts in a Genre Classifier.
 
 
 ### Prepare virtual environment
-#### Using venv - 18.05 NOT UPDATED
+#### Using venv
 ```bash
 python 3.10 -m venv .venv
 source .venv/bin/activate
@@ -88,10 +92,9 @@ pip install -r requirements.txt
 ```
 
 #### Using conda
-Install environment (from `environment.yml` on linux, `environment_mac.yml` on macOS)
-TODO: Check if it is working on Windows too
+Install environment (from `environment.yml` for unix)
 ```bash
-conda env create -f environment_mac.yml
+conda env create -f environment.yml
 conda activate wimu
 ```
 
@@ -130,6 +133,7 @@ gtzan
 ```bash
 make data
 ```
+7. For SVM you must extract features with `make features`
 
 ### Prepare audio for predictions
 
@@ -186,6 +190,8 @@ In order to see classification results for SVM you must be a member of AudioConc
 Plots will be placed in `reports/figures` directory.
 
 ### Run demo with UI
+
+Use `make run_app` or
 ```bash
 cd demo
 streamlit run app.py

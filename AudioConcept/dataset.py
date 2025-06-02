@@ -198,7 +198,7 @@ def get_dataloader(
 
 
 def gtzan_features_data(
-    features_path: Path = PROCESSED_DATA_DIR / "processed_dataset.csv",
+    features_path: Path = PROCESSED_DATA_DIR / "processed_features.csv",
     feature_filter: list[str] = SVM_FEATURES_FILTER,
 ):
     """
@@ -253,13 +253,15 @@ def calculate_features(
             return {k: v for k, v in features_dict.items() if k in feature_filter}
         return features_dict
 
-    def _scale_features(features_array, scaler):
+    def _scale_features(features_df, scaler):
         """Scale features using the provided scaler."""
         if scaler is not None:
-            return scaler.transform(features_array)
+            df = features_df[scaler.feature_names_in_]  # zachowaj kolejność kolumn
+            X_standardized = scaler.transform(df)
+            return X_standardized
         logger.warning("No scaler provided, returning features without scaling.")
-        features_df = pd.DataFrame(features_array, columns=features_array.columns)
-        return features_df
+        features_df = pd.DataFrame(features_df, columns=features_df.columns)
+        return features_df.values
 
     def _validate_values(features_dict):
         """Ensure all values in the features dictionary are scalar."""
@@ -272,7 +274,6 @@ def calculate_features(
     filtered_features_dict = _filter_features(features_dict, feature_filter)
     _validate_values(filtered_features_dict)
     filtered_values = list(filtered_features_dict.values())
-    logger.info(f"Features: {list(filtered_features_dict.keys())}")
 
     features_array = np.array(filtered_values).reshape(1, -1)
     features_df = pd.DataFrame(
@@ -290,13 +291,19 @@ def calculate_features(
     except Exception as e:
         logger.error(f"Failed to save features to {features_path}: {e}")
 
-    # result = extractor.scale_features(features_path, features_path)
+    try:
+        scaled_features_path = PROCESSED_DATA_DIR / "processed_audio_scaled.csv"
+        pd.DataFrame(filtered_features_df, columns=svm_scaler.feature_names_in_).to_csv(
+            scaled_features_path, index=False
+        )
+    except Exception as e:
+        logger.error(f"Failed to save filtered features to {features_path}: {e}")
 
     return filtered_features_df
 
 
 def test_augmentation():
-    logger.info("Testing librosa-based audio augmentations...")
+    logger.info("Testing audio augmentations...")
 
     # Dummy audio
     sample_rate = 22050

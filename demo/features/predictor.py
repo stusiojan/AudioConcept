@@ -1,12 +1,9 @@
 import streamlit as st
 from pathlib import Path
 from io import StringIO
+from loguru import logger
 
-from AudioConcept.predict import (
-    validate_input_audio,
-    load_model,
-    predict_genre as raw_predict,
-)
+from AudioConcept.predict import validate_input_audio, load_model, predict_genre
 from AudioConcept.config import (
     SAMPLE_AUDIO_DIR,
     MODEL_TO_TRAIN,
@@ -17,6 +14,7 @@ from AudioConcept.config import (
 
 class StreamlitLogHandler:
     """Redirects loguru logs to Streamlit with filtering for technical messages."""
+
     def __init__(self):
         self.buffer = StringIO()
         self.ignored_phrases = [
@@ -26,7 +24,9 @@ class StreamlitLogHandler:
         ]
 
     def write(self, message):
-        if message.strip() and not any(phrase in message for phrase in self.ignored_phrases):
+        if message.strip() and not any(
+            phrase in message for phrase in self.ignored_phrases
+        ):
             st.text(message.strip())
 
     def flush(self):
@@ -36,8 +36,6 @@ class StreamlitLogHandler:
 def predict_genre_streamlit(file_path: str, model_choice: str):
     st.write(f"🎵 Selected model: **{model_choice}**")
 
-    # Redirect loguru logs to Streamlit
-    from loguru import logger
     logger.remove()
     logger.add(StreamlitLogHandler(), level="INFO", format="{message}")
 
@@ -48,8 +46,8 @@ def predict_genre_streamlit(file_path: str, model_choice: str):
         return None
 
     try:
-        model = load_model(model_choice, MODELS_DIR)
-        probabilities = raw_predict(model, audio_file_path, model_choice)
+        svm_scaler, model = load_model(model_choice, MODELS_DIR)
+        probabilities = predict_genre(model, svm_scaler, audio_file_path, model_choice)
 
         st.markdown("### 📈 Genre prediction probabilities:")
         for genre, prob in zip(GTZAN_GENRES, probabilities):
