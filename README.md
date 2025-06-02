@@ -133,6 +133,7 @@ gtzan
 ```bash
 make data
 ```
+7. For SVM you must extract features with `make features`
 
 ### Prepare audio for predictions
 

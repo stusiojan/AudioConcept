@@ -61,6 +61,11 @@ create_conda_env:
 data:
 	$(PYTHON_INTERPRETER) -m AudioConcept.dataset
 
+## Prepare features
+.PHONY: features
+features:
+	$(PYTHON_INTERPRETER) -m AudioConcept.features
+
 ## Train CNN model
 .PHONY: train_cnn
 train_cnn:

@@ -126,7 +126,7 @@ dependencies:
   - re2=2023.09.01
   - readline=8.2
   - requests=2.32.3
-  - scikit-learn=1.5.2
+  - scikit-learn=1.6.1
   - scipy=1.14.1
   - seaborn=0.13.2
   - seaborn-base=0.13.2
