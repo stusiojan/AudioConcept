@@ -17,7 +17,7 @@ class xaiWaterfall:
 
     def __init__(
         self,
-        features_path: Path = PROCESSED_DATA_DIR / "processed_dataset.csv",
+        features_path: Path = PROCESSED_DATA_DIR / "processed_dataset.csv",  # features
         model_path: Path = MODELS_DIR / "best_SVM_model.pkl",
         predictions_path: Path = PROCESSED_DATA_DIR / "test_predictions.csv",
         sample_size: int = 100,

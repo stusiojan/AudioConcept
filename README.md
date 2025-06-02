@@ -18,6 +18,9 @@
 
 Locating Musical Concepts in a Genre Classifier.
 
+More on [Experiments](docs/Experiments.md)
+
+
 <h2 id="organization">🗂️ Project Organization</h2>
 
 ```
@@ -84,12 +87,6 @@ Locating Musical Concepts in a Genre Classifier.
 
 
 ### Prepare virtual environment
-#### Using venv
-```bash
-python 3.10 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
 
 #### Using conda
 Install environment (from `environment.yml` for unix)

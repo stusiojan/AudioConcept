@@ -53,7 +53,7 @@
 
 **Realizacja:**
 - Spełnione + VGG i bardziej złozony CNN
-- Zrobiona dla SVM
+- Spełnione
 - BRAK
 
 ## Planowany stack technologiczny
