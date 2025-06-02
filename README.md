@@ -190,8 +190,7 @@ Plots will be placed in `reports/figures` directory.
 
 Use `make run_app` or
 ```bash
-cd demo
-streamlit run app.py
+streamlit run demo/app.py
 ```
 <h2 id="sources">ℹ️ Sources</h2>
 
