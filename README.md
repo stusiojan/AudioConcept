@@ -53,7 +53,11 @@ Locating Musical Concepts in a Genre Classifier.
 │
 ├── scripts            <- Various automation scripts.
 │
-└── AudioConcept   <- Source code for use in this project.
+├── demo               <- Code to host a fronted to XAI.
+│
+├── XAI                <- Code to explain models decicions.
+│
+└── AudioConcept       <- Source code for use in this project.
     │
     ├── __init__.py             <- Makes AudioConcept a Python module
     │
