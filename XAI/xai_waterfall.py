@@ -12,7 +12,7 @@ from AudioConcept.config import MODELS_DIR, PROCESSED_DATA_DIR
 class XaiWaterfall:
     """
     The xaiWaterfall class is used for processing input data,
-    loading the SVM model, scaling the data, computing SHAP values, 
+    loading the SVM model, scaling the data, computing SHAP values,
     and generating the waterfall plot.
     """
 
@@ -65,9 +65,7 @@ class XaiWaterfall:
 
     def compute_shap_values(self):
         if self.X_test_scaled is None:
-            raise ValueError(
-                "Data has not been scaled. Run the scale_data() method."
-            )
+            raise ValueError("Data has not been scaled. Run the scale_data() method.")
         X20 = shap.utils.sample(self.X_test_scaled, self.shap_sample_size)
 
         try:

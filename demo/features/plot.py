@@ -1,4 +1,4 @@
-from XAI.XaiWaterfall import XaiWaterfall
+from XAI.xai_waterfall import XaiWaterfall
 
 
 def generate_waterfall_plot():
