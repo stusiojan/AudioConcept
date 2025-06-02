@@ -1,11 +1,11 @@
 from pathlib import Path
+import pickle
 
 import librosa
 from loguru import logger
 import numpy as np
 import pandas as pd
-import pickle
-from sklearn.preprocessing import StandardScaler, LabelEncoder
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 from tqdm import tqdm
 import typer
 
@@ -129,81 +129,6 @@ class AudioFeatureExtractor:
             raise
 
         return features
-
-    def scale_features(
-        self,
-        input_path: Path = PROCESSED_DATA_DIR / "processed_audio.csv",
-        output_path: Path = PROCESSED_DATA_DIR / "processed_audio.csv",
-    ):
-        """
-        Scale features and save the processed dataset.
-        Args:
-            input_path (Path): Path to the input CSV file containing audio features
-            output_path (Path): Path to save the processed CSV file
-
-        Returns:
-            pd.DataFrame: Processed DataFrame with standardized features and encoded labels
-        """
-        logger.info(f"Processing dataset from {input_path}...")
-        df = pd.read_csv(input_path, sep=",")
-        logger.info(f"Dataframe1: {df}")
-
-        df_filtered = df.iloc[:, 1:-1]
-        y = df.iloc[:, -1]
-
-        logger.info("Calculating correlation matrix...")
-        corr_matrix = df_filtered.corr()
-
-        logger.info("Removing highly correlated features...")
-        correlated_features = set()
-
-        for i in tqdm(
-            range(len(corr_matrix.columns)), desc="Identifying correlated features"
-        ):
-            for j in range(i):
-                if abs(corr_matrix.iloc[i, j]) > 0.9:
-                    colname = corr_matrix.columns[i]
-                    if colname not in correlated_features:
-                        if np.var(df_filtered[colname]) < np.var(
-                            df_filtered[corr_matrix.columns[j]]
-                        ):
-                            correlated_features.add(corr_matrix.columns[i])
-                        else:
-                            correlated_features.add(corr_matrix.columns[j])
-
-        df = df.drop(columns=correlated_features)
-        # df = df.drop(columns={"filename", "label"})
-
-        logger.info(f"Features: {df.columns.tolist()}")
-        logger.info(f"Features values: {df.values}")
-
-        logger.info("Standardizing features...")
-        scaler = StandardScaler()
-        X_standardized = scaler.fit_transform(df)
-
-        logger.info("Encoding labels...")
-        encoder = LabelEncoder()
-        y_encoded = encoder.fit_transform(y)
-
-        X_standardized_df = pd.DataFrame(X_standardized, columns=df.columns)
-        logger.info(f"Features: {X_standardized_df.columns.tolist()}")
-        logger.info(f"Features values: {X_standardized_df.values}")
-
-        df_final = X_standardized_df
-        # df_final = pd.concat(
-        #     [X_standardized_df, pd.Series(y_encoded, name="Y")], axis=1
-        # )
-
-        logger.info(
-            f"Number of features (columns) in final dataset: {df_final.shape[1]}"
-        )
-
-        logger.info(f"Saving processed dataset to {output_path}...")
-        df_final.to_csv(output_path, index=False)
-
-        logger.success(f"Processing complete. Saved to {output_path}.")
-
-        return df_final
 
 
 def process_gtzan_features(

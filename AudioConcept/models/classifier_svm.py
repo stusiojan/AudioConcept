@@ -80,7 +80,6 @@ class SVMClassifier:
             cv: Number of cross-validation folds
         """
         try:
-
             logger.info(f"Prescaled: {X.shape}, {X}")
             X_scaled = self.scaler.fit_transform(X)
             logger.info(f"Scaled: {X_scaled.shape}, {X_scaled}")
