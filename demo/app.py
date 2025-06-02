@@ -32,5 +32,5 @@ if file_path:
 
     if st.button("Waterfall plot"):
         st.write("📊 Waterfall plot generating ...")
-        fig = generate_waterfall_plot()
+        fig = generate_waterfall_plot(model_choice)
         st.pyplot(fig)
