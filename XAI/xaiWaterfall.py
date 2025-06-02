@@ -57,22 +57,19 @@ class xaiWaterfall:
                 "Dane testowe nie zostały wczytane. Uruchom metodę load_data()."
             )
 
-        # Make sure we use only the features that were used during training (feature names issue)
-        try:
-            feature_names = self.classifier.scaler.feature_names_in_
-            self.X_test_df = self.X_test_df[feature_names]
-        except AttributeError:
-            st.warning(
-                "Scaler doesn't have feature_names_in_ attribute. Using all features."
-            )
+        # try:
+        #     feature_names = self.classifier.scaler.feature_names_in_
+        #     self.X_test_df = self.X_test_df[feature_names]
+        # except AttributeError:
+        #     st.warning(
+        #         "Scaler doesn't have feature_names_in_ attribute. Using all features."
+        #     )
 
         try:
             self.X_test_scaled = self.classifier.scaler.transform(self.X_test_df)
         except ValueError as e:
             st.error(f"Feature mismatch error: {e}")
-            # Let's use a hack to get around feature mismatch: use the data as is
-            # This is not ideal but will allow the demo to work
-            self.X_test_scaled = self.X_test_df.values
+            # self.X_test_scaled = self.X_test_df.values
 
         return self.X_test_scaled
 
@@ -82,14 +79,12 @@ class xaiWaterfall:
                 "Dane nie zostały przeskalowane. Uruchom metodę scale_data()."
             )
         X20 = shap.utils.sample(self.X_test_scaled, self.shap_sample_size)
+
         try:
             self.explainer = shap.Explainer(self.classifier.model.predict, X20)
-            self.shap_values = self.explainer(
-                self.X_test_scaled
-            )  # Use the scaled data instead of raw df
+            self.shap_values = self.explainer(self.X_test_scaled)  # X_test_df
         except Exception as e:
             st.error(f"Error computing SHAP values: {e}")
-            # Fallback to a simpler explainer
             self.explainer = shap.KernelExplainer(
                 self.classifier.model.predict_proba, X20
             )
