@@ -196,6 +196,39 @@ LEARNING RATE = 9e-4
 With the biggest learning rate from tested ones the model doesn't learn.
 With the lowest learning rates the model is overfitting. This learning rates could be better if we use more agressive regaluration and enlargen the dataset.
 
+### LLM experiment
+
+The task of training CNN on GTZAN dataset is to classify audio genres is a common theme in audio processing, so we tried to fully generate
+training pipeline with LLM.
+
+We did not spend much time on experimenting with this neural network. The best training session resulted with 32.9 validation accuracy. Training parameters:
+```
+epochs = 20
+batch_size = 16
+learning_rate = 0.0005
+
+criterion = nn.CrossEntropyLoss(label_smoothing=0.1)
+
+optimizer = optim.AdamW(
+    self.model.parameters(),
+    lr=args.learning_rate,
+    weight_decay=args.weight_decay,
+    betas=(0.9, 0.999),
+    eps=1e-8,
+)
+
+scheduler = ReduceLROnPlateau(
+    optimizer,
+    mode="max",
+    factor=0.5,
+    patience=args.patience,
+    verbose=True,
+    min_lr=args.min_lr / 10,
+)
+```
+
+![](../reports/llm_training_curves.png)
+
 ## SVM
 
 We experimented with this parameters with full feature extraction:
