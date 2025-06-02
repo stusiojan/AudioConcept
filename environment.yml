@@ -164,3 +164,5 @@ dependencies:
   - tqdm=4.67.1
   - typer=0.15.2
   - ipykernel=6.29.5
+  - shap
+  - streamlit

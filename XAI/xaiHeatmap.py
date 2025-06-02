@@ -6,10 +6,11 @@ from AudioConcept.models.classifier_svm import SVMClassifier
 from AudioConcept.config import MODELS_DIR, PROCESSED_DATA_DIR
 
 
-class xaiHeatmap:
+class XaiHeatmap:
     """
-    Klasa xaiHeatmap służy do przetwarzania danych wejściowych,
-    ładowania modelu SVM, skalowania danych, obliczania wartości SHAP oraz generowania wykresu heatmap.
+    The xaiHeatmap class is used for processing input data,
+    loading the SVM model, scaling the data, computing SHAP values, 
+    and generating the heatmap plot.
     """
 
     def __init__(
@@ -89,5 +90,5 @@ class xaiHeatmap:
 
 
 if __name__ == "__main__":
-    xai = xaiHeatmap()
+    xai = XaiHeatmap()
     xai.run()

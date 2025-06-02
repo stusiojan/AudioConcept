@@ -1,9 +1,9 @@
-from XAI.xaiWaterfall import xaiWaterfall
+from XAI.XaiWaterfall import XaiWaterfall
 
 
 def generate_waterfall_plot():
     """Generuje wykres waterfall na podstawie modelu SHAP."""
-    xai = xaiWaterfall()
+    xai = XaiWaterfall()
     xai.load_data()
     xai.load_model()
     xai.scale_data()

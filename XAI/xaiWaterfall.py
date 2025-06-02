@@ -9,10 +9,11 @@ from AudioConcept.models.classifier_svm import SVMClassifier
 from AudioConcept.config import MODELS_DIR, PROCESSED_DATA_DIR
 
 
-class xaiWaterfall:
+class XaiWaterfall:
     """
-    Klasa xaiWaterfall służy do przetwarzania danych wejściowych,
-    ładowania modelu SVM, skalowania danych, obliczania wartości SHAP oraz generowania wykresu waterfall.
+    The xaiWaterfall class is used for processing input data,
+    loading the SVM model, scaling the data, computing SHAP values, 
+    and generating the waterfall plot.
     """
 
     def __init__(
@@ -54,7 +55,7 @@ class xaiWaterfall:
     def scale_data(self):
         if self.X_test_df is None:
             raise ValueError(
-                "Dane testowe nie zostały wczytane. Uruchom metodę load_data()."
+                "Test data has not been loaded. Run the load_data() method."
             )
 
         # try:
@@ -76,7 +77,7 @@ class xaiWaterfall:
     def compute_shap_values(self):
         if self.X_test_scaled is None:
             raise ValueError(
-                "Dane nie zostały przeskalowane. Uruchom metodę scale_data()."
+                "Data has not been scaled. Run the scale_data() method."
             )
         X20 = shap.utils.sample(self.X_test_scaled, self.shap_sample_size)
 
@@ -94,7 +95,7 @@ class xaiWaterfall:
     def plot_waterfall(self, max_display: int = 14):
         if self.shap_values is None:
             raise ValueError(
-                "Wartości SHAP nie zostały obliczone. Uruchom metodę compute_shap_values()."
+                "SHAP values have not been computed. Run the compute_shap_values() method."
             )
         plt.clf()
         shap.plots.waterfall(
@@ -106,7 +107,7 @@ class xaiWaterfall:
     def plot_top_features(self, sample_index: int = 0, top_n: int = 10):
         if self.shap_values is None:
             raise ValueError(
-                "Wartości SHAP nie zostały obliczone. Uruchom metodę compute_shap_values()."
+                "SHAP values have not been computed. Please run the compute_shap_values() method."
             )
         mean_abs_shap = np.abs(self.shap_values.values).mean(axis=0)
         top_indices = np.argsort(mean_abs_shap)[-top_n:][::-1]
@@ -121,10 +122,9 @@ class xaiWaterfall:
         self.load_model()
         self.scale_data()
         self.compute_shap_values()
-        # self.plot_waterfall()
         self.plot_top_features()
 
 
 if __name__ == "__main__":
-    xai = xaiWaterfall()
+    xai = XaiWaterfall()
     xai.run()

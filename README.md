@@ -16,10 +16,19 @@
 
 <h2 id="about">🧐 About</h2>
 
-Locating Musical Concepts in a Genre Classifier.
+This project focuses on implementing three models (SVM, CNN, and VGGish) for music genre classification. The models were trained on the GTZAN dataset. Additionally, the project includes an XAI component that explains how individual track features influence the classification. We created a demo with a user interface that allows easy viewing of both prediction results and explanations.
 
-More on [Experiments](docs/Experiments.md)
+Design proposal with the project plan and an initial work  schedule: [DesignProposal](docs/DesignProposal.md)
 
+Verification of what has been accomplished: [Worklog status](docs/Worklog_status.md)
+
+All of the experiments among models are described here: [Experiments](docs/Experiments.md) 
+
+XAI results: [XAI results](docs/XAI_results.md)
+
+
+
+[Experiments](docs/Experiments.md)
 
 <h2 id="organization">🗂️ Project Organization</h2>
 
@@ -190,8 +199,7 @@ Plots will be placed in `reports/figures` directory.
 
 Use `make run_app` or
 ```bash
-cd demo
-streamlit run app.py
+streamlit run demo/app.py
 ```
 <h2 id="sources">ℹ️ Sources</h2>
 

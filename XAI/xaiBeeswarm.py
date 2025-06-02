@@ -7,10 +7,11 @@ from AudioConcept.models.classifier_svm import SVMClassifier
 from AudioConcept.config import MODELS_DIR, PROCESSED_DATA_DIR
 
 
-class xaiBeeswarm:
+class XaiBeeswarm:
     """
-    Klasa xaiBeeswarm służy do przetwarzania danych wejściowych,
-    ładowania modelu SVM, skalowania danych, obliczania wartości SHAP oraz generowania wykresu beeswarm.
+    The xaiBeeswarm class is used for processing input data,
+    loading the SVM model, scaling the data, computing SHAP values, 
+    and generating the beeswarm plot.
     """
 
     def __init__(
@@ -85,10 +86,9 @@ class xaiBeeswarm:
         self.load_model()
         self.scale_data()
         self.compute_shap_values()
-        # self.plot_beeswarm()
         self.plot_top_features(top_n=10)
 
 
 if __name__ == "__main__":
-    xai = xaiBeeswarm()
+    xai = XaiBeeswarm()
     xai.run()
