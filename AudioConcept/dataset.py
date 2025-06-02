@@ -287,7 +287,7 @@ def calculate_features(
         pd.DataFrame(filtered_features_dict, index=[0]).to_csv(
             features_path, index=False
         )
-        logger.info(f"Features saved to {features_path}")
+        logger.debug(f"Features saved to {features_path}")
     except Exception as e:
         logger.error(f"Failed to save features to {features_path}: {e}")
 

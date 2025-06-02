@@ -7,6 +7,7 @@ parent_dir = str(Path(__file__).parent.parent)
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
+from models.model_type import ModelType
 from components.config import configure_page
 from components.audio_selector import select_audio_file
 from features.predictor import predict_genre_streamlit
@@ -17,7 +18,8 @@ configure_page()
 
 st.title("Music Genre Classifier with XAI")
 
-model_choice = st.selectbox("Choose prediction model:", ["SVM"])
+possible_models = [model.value for model in ModelType]
+model_choice = st.selectbox("Choose prediction model:", possible_models)
 
 file_path = select_audio_file()
 

@@ -122,7 +122,7 @@ class AudioFeatureExtractor:
                 features[f"mfcc{i}_mean"] = np.mean(mfcc_values)
                 features[f"mfcc{i}_var"] = np.var(mfcc_values)
 
-            logger.info(f"Successfully extracted {len(features)} features")
+            logger.debug(f"Successfully extracted {len(features)} features")
 
         except Exception as e:
             logger.error(f"Error extracting features: {e}")

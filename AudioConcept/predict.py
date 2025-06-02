@@ -159,13 +159,10 @@ def load_model(model_name: str, model_path: Path):
 
     def _load_scaler():
         try:
-            logger.info("Loading scaler...")
+            logger.debug("Loading scaler...")
             with open(PROCESSED_DATA_DIR / "scaler.pkl", "rb") as f:
                 scaler = pickle.load(f)
-                logger.info(
-                    f" Scaler type: {type(scaler)}, values: {scaler.mean_}, {scaler.scale_}"
-                )
-            logger.success("Scaler loaded successfully")
+            logger.debug("Scaler loaded successfully")
         except FileNotFoundError:
             logger.error(
                 "Scaler file not found. Please ensure the scaler.pkl file exists in the processed data directory."
@@ -207,7 +204,7 @@ def load_model(model_name: str, model_path: Path):
         svm_scaler = None
         model = loaded_data
 
-    logger.success(f"Model {model_name} loaded successfully")
+    logger.debug(f"Model {model_name} loaded successfully")
     return svm_scaler, model
 
 
@@ -256,7 +253,7 @@ def predict_genre(
         audio_tensor = torch.FloatTensor(audio_data).unsqueeze(0)
 
         device = next(model.parameters()).device
-        logger.info(f"Model is on device: {device}")
+        logger.debug(f"Model is on device: {device}")
 
         audio_tensor = audio_tensor.to(device)
 
