@@ -57,21 +57,10 @@ class XaiWaterfall:
             raise ValueError(
                 "Test data has not been loaded. Run the load_data() method."
             )
-
-        # try:
-        #     feature_names = self.classifier.scaler.feature_names_in_
-        #     self.X_test_df = self.X_test_df[feature_names]
-        # except AttributeError:
-        #     st.warning(
-        #         "Scaler doesn't have feature_names_in_ attribute. Using all features."
-        #     )
-
         try:
             self.X_test_scaled = self.classifier.scaler.transform(self.X_test_df)
         except ValueError as e:
             st.error(f"Feature mismatch error: {e}")
-            # self.X_test_scaled = self.X_test_df.values
-
         return self.X_test_scaled
 
     def compute_shap_values(self):
@@ -83,7 +72,8 @@ class XaiWaterfall:
 
         try:
             self.explainer = shap.Explainer(self.classifier.model.predict, X20)
-            self.shap_values = self.explainer(self.X_test_scaled)  # X_test_df
+            self.shap_values = self.explainer(self.X_test_scaled)
+            self.shap_values.feature_names = list(self.X_test_df.columns)
         except Exception as e:
             st.error(f"Error computing SHAP values: {e}")
             self.explainer = shap.KernelExplainer(
@@ -112,6 +102,14 @@ class XaiWaterfall:
         mean_abs_shap = np.abs(self.shap_values.values).mean(axis=0)
         top_indices = np.argsort(mean_abs_shap)[-top_n:][::-1]
         shap_subset = self.shap_values[sample_index, top_indices]
+
+        if (
+            hasattr(self.shap_values, "feature_names")
+            and self.shap_values.feature_names is not None
+        ):
+            shap_subset.feature_names = [
+                self.shap_values.feature_names[i] for i in top_indices
+            ]
         plt.clf()
         shap.plots.waterfall(shap_subset, max_display=top_n)
         fig = plt.gcf()
