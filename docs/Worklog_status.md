@@ -53,7 +53,7 @@
 
 **Realizacja:**
 - Spełnione + VGG i bardziej złozony CNN
-- Częściowa - notebooki
+- Zrobiona dla SVM
 - BRAK
 
 ## Planowany stack technologiczny
@@ -86,12 +86,6 @@ Jest tez parę mniejszych pakietów jak *typer, tqdm*
 ## Dodatkowe
 
 - Ręczna implementacja augmentacja danych muzycznych (przez konflikty z bibliotekami oferującymi je out of the box)
-- automatykacja eksperymentów przez skrypty
+- automatyzacja eksperymentów przez skrypty
 - zdiagnozowanie błędnego pliku w datasecie
 - w miarę ładna praca w repo (ponazywane ładnie branche i commity)
-
-## Do zrobienia
-
-- [ ] uspójnienie requirements i environment
-- [ ] dodanie opcji wyboru modelu do predykcji (aktualnie działa tylko dla SVM)
-- [ ] testy
